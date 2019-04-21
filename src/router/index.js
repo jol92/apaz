@@ -3,7 +3,7 @@ import Router from 'vue-router'
 
 // Components
 import Home from '../components/Home'
-import Footer from '../components/Footer'
+import UserManagment from '../components/UserManagment'
 
 Vue.use(Router)
 
@@ -15,13 +15,11 @@ let router = new Router({
     },
     {
       path: '/home',
-      component: Home,
-      name: Home
+      component: Home
     },
     {
-      path: '/footer',
-      component: Footer,
-      name: Footer
+      path: '/userManagment',
+      component: UserManagment
     }
   ]
 })
