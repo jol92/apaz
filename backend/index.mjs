@@ -1,7 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import apiController from './domain/apicontroller'
-import cors from 'cors'
+// import cors from 'cors'
 
 dotenv.config()
 const { PORT, PUBLIC_URL } = process.env
@@ -11,14 +11,11 @@ const router = express.Router()
 
 app.use(`${PUBLIC_URL}`, router)
 
-app.use(
-  cors({
-    maxAge: 1800,
-    origin: 'localhost',
-    optionsSuccessStatus: 200
-  })
-)
-app.options('*', cors())
+app.use(function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+  next()
+})
 
 router.use(express.json())
 
