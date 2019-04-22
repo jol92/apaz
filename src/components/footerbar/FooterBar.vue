@@ -99,7 +99,7 @@ section#footer
       .col-xs-12.col-sm-12.col-md-12.mt-2.mt-sm-2.text-center.text-white
         p
           u
-            a(href='https://www.nationaltransaction.com/') National Transaction Corporation
+            a(href='https://www.nationaltransaction.com/') Asociación Protectora de Animales Zeus
           |  is a Registered MSP/ISO of Elavon, Inc. Georgia [a wholly owned subsidiary of U.S. Bancorp, Minneapolis, MN]
         p.h6
           | All right Reversed.

@@ -1,3 +1,3 @@
-import FooterBar from './FooterBar';
+import FooterBar from './FooterBar'
 
-export default FooterBar;
+export default FooterBar
