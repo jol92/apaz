@@ -21,13 +21,13 @@ export default {
   header
     nav(:class="{black: scrollPosition > 100}")
       .logo
-        router-link(to="/home") APAZ
+        router-link(to="home") APAZ
       .menu
         ul
           li
-            router-link(to="/home") Home
+            router-link(to="home") Home
           li
-            router-link(to="/userManagment") User Management
+            router-link(to="userManagement") User Management
 </template>
 
 <style lang="sass" scoped>

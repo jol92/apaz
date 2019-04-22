@@ -1,27 +1,27 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from 'vue';
+import Router from 'vue-router';
 
 // Components
-import Home from '../components/Home'
-import UserManagment from '../components/UserManagment'
+import Home from '../views/Home';
+import UserManagement from '../views/UserManagement';
 
-Vue.use(Router)
+Vue.use(Router);
 
 let router = new Router({
   routes: [
     {
       path: '/',
-      component: Home
+      component: Home,
     },
     {
       path: '/home',
-      component: Home
+      component: Home,
     },
     {
-      path: '/userManagment',
-      component: UserManagment
-    }
-  ]
-})
+      path: '/userManagement',
+      component: UserManagement,
+    },
+  ],
+});
 
-export default router
+export default router;
