@@ -1,4 +1,5 @@
 <script>
+import ModalUsuarioVue from '../modals/usuario/ModalUsuario.vue';
 export default {
   name: 'NavBar',
   data() {
@@ -12,6 +13,23 @@ export default {
   methods: {
     updateScroll() {
       this.scrollPosition = window.scrollY
+    },
+    toggleNav() {
+      console.log('toglenav')
+      var nav = document.getElementById("nav-menu");
+      var className = nav.getAttribute("class");
+      if(className == "navbar-burger") {
+          nav.className = "is-active";
+      } else {
+          nav.className = "navbar";
+      }
+    },
+    userModal() {
+      this.$modal.open({
+        parent: this,
+        component: ModalUsuarioVue,
+        hasModalCard: true
+      })
     }
   }
 }
@@ -19,59 +37,52 @@ export default {
 
 <template lang="pug">
   header
-    nav(:class="{black: scrollPosition > 100}")
-      .logo
-        router-link(to="home") APAZ
-      .menu
-        ul
-          li
-            router-link(to="home") Home
-          li
-            router-link(to="userManagement") User Management
+    nav.navbar(role='navigation', aria-label='main navigation')
+      .navbar-brand
+        router-link.navbar-item(to="home")
+          img(src='https://bulma.io/images/bulma-logo.png', width='112', height='28')
+        a.navbar-burger.burger(role='button', aria-label='menu', aria-expanded='false', data-target='nav-menu' @click="toggleNav")
+          span(aria-hidden='true')
+          span(aria-hidden='true')
+          span(aria-hidden='true')
+      #nav-menu.navbar-menu
+        .navbar-start
+          router-link.navbar-item(to="home")
+            | Home
+          router-link.navbar-item(to="userManagement")
+            | User Managmenet
+          .navbar-item.has-dropdown.is-hoverable
+            a.navbar-link
+              | More
+            .navbar-dropdown
+              a.navbar-item
+                | About
+              a.navbar-item
+                | Jobs
+              a.navbar-item
+                | Contact
+              hr.navbar-divider
+              a.navbar-item
+                | Report an issue
+        .navbar-end
+          .navbar-item
+            .buttons
+              a.button.is-primary(@click="userModal()")
+                strong Ayúdanos 
+              a.button.is-light
+                | Entrar
 </template>
 
 <style lang="sass" scoped>
 header
   width: 100%
-  height: 100vh
-  background: url(header.jpg) no-repeat 40% 40%
+  background: url(header.jpg) no-repeat 50% 40%
+  background-position: 25% 25%
   background-size: cover
-  max-height: 500px
-  min-height: 300px
-  a
-    text-decoration: none
-    color: #fff
+  height: 450px
+  min-height: 240px
 
 nav
   position: fixed
   width: 100%
-  line-height: 60px
-  ul
-    line-height: 60px
-    list-style: none
-    background: rgba(0, 0, 0, 0)
-    overflow: hidden
-    padding: 0
-    text-align: right
-    margin: 0
-    padding-right: 40px
-    transition: 1s
-  &.black ul
-    background: rgba(0,123,94, 0.90)
-  ul li
-    display: inline-block
-    padding: 16px 40px
-    a
-      color: #fff
-      font-size: 16px
-
-.logo
-  line-height: 60px
-  position: fixed
-  float: left
-  margin: 16px 46px
-  color: #fff
-  font-weight: bold
-  font-size: 24px
-  letter-spacing: 2px
 </style>

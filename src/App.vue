@@ -1,11 +1,3 @@
-<template lang="pug">
-  .container-fluid
-    nav-bar
-    .content
-      router-view
-    footer-bar
-</template>
-
 <script>
 import NavBar from '@/components/navbar'
 import FooterBar from '@/components/footerbar'
@@ -18,6 +10,14 @@ export default {
   },
 }
 </script>
+
+<template lang="pug">
+  .container-fluid
+    nav-bar
+    .content
+      router-view
+    footer-bar
+</template>
 
 <style lang="sass" scoped>
 .container-fluid

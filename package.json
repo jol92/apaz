@@ -11,14 +11,19 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.17",
+    "@fortawesome/free-solid-svg-icons": "^5.8.1",
+    "@fortawesome/vue-fontawesome": "^0.1.6",
     "axios": "^0.18.0",
-    "bootstrap": "^4.3.1",
-    "bootstrap-vue": "^2.0.0-rc.16",
+    "buefy": "^0.7.4",
+    "moment": "^2.24.0",
     "vue": "^2.6.10",
     "vue-axios": "^2.1.4",
+    "vue-material-design-icons": "^3.1.0",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.8.1",
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.22.1",
     "babel-eslint": "^8.2.1",
