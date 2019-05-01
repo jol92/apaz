@@ -15,20 +15,19 @@ export default {
       this.scrollPosition = window.scrollY
     },
     toggleNav() {
-      console.log('toglenav')
-      var nav = document.getElementById("nav-menu");
-      var className = nav.getAttribute("class");
-      if(className == "navbar-burger") {
-          nav.className = "is-active";
-      } else {
-          nav.className = "navbar";
-      }
+          var nav = document.getElementById("nav-menu");
+          var className = nav.getAttribute("class");
+          if(className == "nav-right nav-menu") {
+              nav.className = "is-active";
+          } else {
+              nav.className = "";
+          }
     },
     userModal() {
       this.$modal.open({
         parent: this,
         component: ModalUsuarioVue,
-        hasModalCard: true
+        hasModalCard: true,
       })
     }
   }

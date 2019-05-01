@@ -13,21 +13,23 @@ import Buefy from 'buefy'
 import 'buefy/dist/buefy.css'
 
 // FontAwesome
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faCoffee } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-// Icons Material
-import MenuIcon from 'vue-material-design-icons/Menu.vue'
-
-library.add(faCoffee)
+// Vee Validator
+import VeeValidate, { Validator } from 'vee-validate'
+import es from 'vee-validate/dist/locale/es'
 Vue.component('font-awesome-icon', FontAwesomeIcon)
-Vue.component('menu-icon', MenuIcon)
 
 Vue.use(VueAxios, axios)
 Vue.use(Buefy, {
   defaultIconPack: 'fa'
 })
+
+Vue.use(VeeValidate, {
+  events: ''
+})
+
+Validator.localize('es', es)
 
 Vue.config.productionTip = false
 
