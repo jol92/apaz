@@ -16,7 +16,7 @@ export default {
       isPaginationSimple: true,
       defaultSortDirection: 'asc',
       currentPage: 1,
-      perPage: 5,
+      perPage: 10,
       userList: [],
     }
   },

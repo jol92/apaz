@@ -8,7 +8,9 @@ const apicontroller = app => {
     next()
   })
 
-  // Usuarios
+  // USUARIOS
+
+  // Listar Usuarios
   app.get('/usuarios', (req, res, next) => knex('usuarios').join(
     'provincias', 'usuarios.id_provincia', '=', 'provincias.id_provincia'
   )
@@ -20,44 +22,60 @@ const apicontroller = app => {
       data => res.send(data)
     ))
 
-  app.post('/usuarios/:usuario', (req, res, next) => {
+  // Añadir Usuario
+  app.post('/insertUsuario', (req, res, next) => {
     const { usuario } = req.body
-    // bcrypt.hash(usuario.password, 10, function (hash) {
-    //   console.log(hash)
-    // })
-    knex('usuarios').insert(
-      {dni: usuario.dni},
-      {email: usuario.email},
-      {password: usuario.password},
-      {nombre: usuario.nombre},
-      {apellidos: usuario.apellidos},
-      {telefono: usuario.telefono},
-      {direccion: usuario.direccion1},
-      {fecha_nacimiento: usuario.fecha_nac},
-      {id_tipo_usuario: 2},
-      {id_provincia: usuario.provincia},
-      {direccion2: usuario.direccion2},
-      {id_tipo_vivienda: usuario.tipoVivienda}
-    )
-    console.log(usuario)
+    bcrypt.hash(usuario.password, 10, function(err, hash) {
+      knex('usuarios').insert(
+        [
+          {
+          dni: usuario.dni,
+          email: usuario.email,
+          password: hash,
+          nombre: usuario.nombre,
+          apellidos: usuario.apellidos,
+          telefono: usuario.telefono,
+          direccion: usuario.direccion1,
+          fecha_nacimiento: usuario.fecha_nac,
+          id_tipo_usuario: 2,
+          id_provincia: usuario.provincia,
+          direccion2: usuario.direccion2,
+          id_tipo_vivienda: usuario.tipoVivienda
+          }
+        ]
+      ).then(function (response) {
+          const insertPreferencias = usuario.preferencias.map(preferencia => ({ id_usuario: response[0], id_caracteristica: preferencia}))
+          return knex('preferencias').insert(insertPreferencias)
+      })
+      .catch(err => {console.log(err)})
+    })
   })
 
+  // Mostrar un usuario
   app.get('/usaurios/:usuarioId', (req, res, next) => {
-
+    const { usuarioId } = req.params
+    knex('usuarios').where('id_usuario', usuarioId).then(data => res.send(data))
   })
 
+  // Eliminar un usuario
   app.delete('/usuarios/:usuarioId', (req, res, next) => {
     const { usuarioId } = req.params
     console.log(usuarioId)
   })
 
-  // Provincias
+  // PROVINCIAS
+
+  // Listar provincias
   app.get('/provincias', (req, res, next) => knex('provincias').select('*').then(data => res.send(data)))
 
-  // Viviendas
+  // VIVIENDAS
+
+  // Listar viviendas
   app.get('/viviendas', (req, res, next) => knex('tipos_vivienda').select('*').then(data => res.send(data)))
 
-  // Caracteristicas
+  // CARACTERISTICAS
+
+  // Listar características
   app.get('/caracteristicas', (req, res, next) => knex('caracteristicas').select('*').then(data => res.send(data)))
 }
 

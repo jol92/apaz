@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 01-05-2019 a las 13:27:18
+-- Tiempo de generación: 04-05-2019 a las 22:29:43
 -- Versión del servidor: 10.1.38-MariaDB
 -- Versión de PHP: 7.3.4
 
@@ -82,7 +82,8 @@ CREATE TABLE `estados_mascota` (
 
 INSERT INTO `estados_mascota` (`id`, `nombre_estado`) VALUES
 (1, 'adoptada'),
-(2, 'acogida');
+(2, 'acogida'),
+(3, 'otro');
 
 -- --------------------------------------------------------
 
@@ -268,27 +269,11 @@ CREATE TABLE `usuarios` (
   `telefono` int(9) DEFAULT NULL,
   `direccion` varchar(500) NOT NULL,
   `fecha_nacimiento` int(11) NOT NULL,
-  `preferencias` varchar(8000) DEFAULT NULL,
   `id_tipo_usuario` int(11) NOT NULL,
   `id_provincia` int(2) NOT NULL,
   `direccion2` varchar(255) NOT NULL,
   `id_tipo_vivienda` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Volcado de datos para la tabla `usuarios`
---
-
-INSERT INTO `usuarios` (`id_usuario`, `dni`, `email`, `password`, `nombre`, `apellidos`, `telefono`, `direccion`, `fecha_nacimiento`, `preferencias`, `id_tipo_usuario`, `id_provincia`, `direccion2`, `id_tipo_vivienda`) VALUES
-(1, '45945472M', 'jorge@asd.com', 'pruebapassword', 'asdasd', 'asdasd', 666666666, 'asdasdasd', 708715176, NULL, 2, 1, '', 1),
-(3, '45945472M', 'jorge@jorge.com', 'asdasdasd', 'lolazo', 'lolazo', 666666666, 'Luis Ponce de León 10-A 3º B', 123123123, NULL, 1, 20, '', 1),
-(4, '45945472M', 'zxzx@asdasdsadz.com', 'asdasdasd', 'lolazo', 'lolazo', 666666666, 'Luis Ponce de León 10-A 3º B', 123123123, NULL, 1, 20, '', 1),
-(5, '45945472M', 'zzzzzzzz@jorge.com', 'asdacccccsdasd', 'asdsada', 'zxczxc', 666666666, 'Luis Ponce de León 10-A 3º B', 123123123, NULL, 1, 20, '', 1),
-(6, '45945472M', 'jorge@asd.com', 'pruebapassword', 'asdasd', 'asdasd', 666666666, 'asdasdasd', 708715176, NULL, 2, 1, '', 1),
-(7, '45945472M', 'jorge@asd.com', 'pruebapassword', 'asdasd', 'asdasd', 666666666, 'asdasdasd', 708715176, NULL, 2, 1, '', 1),
-(8, '45945472M', 'jorge@asd.com', 'pruebapassword', 'asdasd', 'asdasd', 666666666, 'asdasdasd', 708715176, NULL, 2, 1, '', 1),
-(9, '45945472M', 'jorge@asd.com', 'pruebapassword', 'asdasd', 'asdasd', 666666666, 'asdasdasd', 708715176, NULL, 2, 1, '', 1),
-(10, '45945472M', 'jorge@asd.com', 'pruebapassword', 'asdasd', 'asdasd', 666666666, 'asdasdasd', 708715176, NULL, 2, 1, '', 1);
 
 --
 -- Índices para tablas volcadas
@@ -341,6 +326,7 @@ ALTER TABLE `mascotas_adoptadas`
 -- Indices de la tabla `preferencias`
 --
 ALTER TABLE `preferencias`
+  ADD PRIMARY KEY (`id`),
   ADD KEY `preferencias_fk1` (`id_caracteristica`),
   ADD KEY `preferencias_fk2` (`id_usuario`);
 
@@ -391,7 +377,7 @@ ALTER TABLE `caracteristicas_mascota`
 -- AUTO_INCREMENT de la tabla `estados_mascota`
 --
 ALTER TABLE `estados_mascota`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `mascotas`
@@ -410,6 +396,12 @@ ALTER TABLE `mascotas_acogidas`
 --
 ALTER TABLE `mascotas_adoptadas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `preferencias`
+--
+ALTER TABLE `preferencias`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `provincias`
@@ -433,7 +425,7 @@ ALTER TABLE `tipos_vivienda`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
 
 --
 -- Restricciones para tablas volcadas
