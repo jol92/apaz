@@ -12,7 +12,7 @@
             b-input(v-model='user.apellidos', name='apellidos', v-validate="'required'", placeholder='Introduzca sus apellidos')
 
           b-field(label='Fecha de Nacimiento *', :type="{'is-danger': errors.has('fecha de nacimiento')}", :message="errors.first('fecha de nacimiento')")
-            b-datepicker(placeholder='Pulsa para seleccionar una fecha', editable, icon='calendar-today', name='fecha de nacimiento' v-model='fecha', v-validate="'required'" )
+            b-datepicker(placeholder='Pulsa para seleccionar una fecha', editable, icon='calendar-day', name='fecha de nacimiento' v-model='fecha', v-validate="'required'" )
 
           b-field(label='E-mail *', :type="{'is-danger': errors.has('email')}", :message="errors.first('email')")
             b-input(type='text', v-model='user.email', name='email', v-validate="'required|email'", placeholder='email@email.com')
@@ -56,7 +56,9 @@
             b-checkbox(v-model='flagTerms', name='flag-terms', v-validate="'required:false'")
               | Estoy de acuerdo con los términos y condiciones
 
-          button.button.is-primary(type='submit')  Resgistrarse
+          .button-box
+            button.button.is-primary(type='submit')  Resgistrarse
+            button.button.is-danger(type='button', @click='$parent.close()') Cerrar
 </template>
 
 <script>
@@ -108,6 +110,8 @@ export default {
           this.user.fecha_nac = moment(this.fecha).unix()
           this.user.telefono = parseInt(this.user.telefono)
           this.postUsuario()
+          this.$parent.close()
+          this.$parent.fetchData()
           return;
         }
         this.$toast.open({
@@ -173,4 +177,8 @@ export default {
     margin: 2px
   .lista_caracteristicas_box
     margin-top: 10px
+  .button-box
+    margin-top: 50px
+    display: flex
+    justify-content: space-around
 </style>

@@ -12,25 +12,58 @@ import VueAxios from 'vue-axios'
 import Buefy from 'buefy'
 import 'buefy/dist/buefy.css'
 
-// FontAwesome
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-
 // Vee Validator
 import VeeValidate, { Validator } from 'vee-validate'
 import es from 'vee-validate/dist/locale/es'
-Vue.component('font-awesome-icon', FontAwesomeIcon)
+
+// FontAwesome
+import { library } from '@fortawesome/fontawesome-svg-core'
+import {
+  faCheck,
+  faTrash,
+  faInfoCircle,
+  faExclamationTriangle,
+  faArrowUp,
+  faAngleRight,
+  faAngleDown,
+  faAngleLeft,
+  faEye,
+  faCaretDown,
+  faCaretUp,
+  faUserEdit,
+  faExclamationCircle,
+  faCalendarDay
+} from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+// FA Icons Library
+library.add(
+  faCheck,
+  faTrash,
+  faInfoCircle,
+  faExclamationTriangle,
+  faArrowUp,
+  faAngleRight,
+  faAngleDown,
+  faAngleLeft,
+  faEye,
+  faCaretDown,
+  faCaretUp,
+  faUserEdit,
+  faExclamationCircle,
+  faCalendarDay
+)
+Vue.component('vue-fontawesome', FontAwesomeIcon)
 
 Vue.use(VueAxios, axios)
 Vue.use(Buefy, {
-  defaultIconPack: 'fa'
+  defaultIconPack: 'fa',
+  defaultIconComponent: 'vue-fontawesome'
 })
-
 Vue.use(VeeValidate, {
   events: ''
 })
-
 Validator.localize('es', es)
-
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

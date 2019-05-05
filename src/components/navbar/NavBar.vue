@@ -38,8 +38,7 @@ export default {
   header
     nav.navbar(role='navigation', aria-label='main navigation')
       .navbar-brand
-        router-link.navbar-item(to="home")
-          img(src='https://bulma.io/images/bulma-logo.png', width='112', height='28')
+        router-link.navbar-item.logo(to="home")
         a.navbar-burger.burger(role='button', aria-label='menu', aria-expanded='false', data-target='nav-menu' @click="toggleNav")
           span(aria-hidden='true')
           span(aria-hidden='true')
@@ -80,8 +79,11 @@ header
   background-size: cover
   height: 450px
   min-height: 240px
-
-nav
-  position: fixed
-  width: 100%
+  nav
+    position: fixed
+    width: 100%
+  .logo
+    background: url(logo.png)
+    width: 200px
+    height: 60px
 </style>

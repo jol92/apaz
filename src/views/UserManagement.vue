@@ -21,9 +21,12 @@ export default {
     }
   },
   mounted() {
-    this.getUsers()
+    this.fetchData()
   },
   methods: {
+    fetchData() {
+      this.getUsers()
+    },
     getUsers(){
       axios.get('http://localhost:3000/apaz/v1/usuarios')
         .then((response) => {
@@ -32,30 +35,65 @@ export default {
         })
         .catch(function (error) {
             console.log(error);
-        });
+        })
     },
+    deleteUser(id){
+      axios.delete(`http://localhost:3000/apaz/v1/deleteUser/${id}`)
+      .then((response) => {
+        this.$toast.open('Usuario Eliminado!')
+        this.fetchData()
+      })
+      .catch(function (error){
+        console.log(error);
+      })
+    },
+    handleEdit(user) {
+      console.log(user)
+    },
+    handleDelete(id) {
+      this.$dialog.confirm({
+        title: 'Eliminar Usuario',
+        message: '¿Está seguro de que quiere <b>eliminar</b> el usuario? Esta acción no se podrá deshacer.',
+        confirmText: 'Eliminar Usuario',
+        type: 'is-danger',
+        hasIcon: true,
+        onConfirm: () => this.deleteUser(id)
+      })
+    }
   },
 }
 </script>
 
 <template lang="pug">
   .container-fluid
-    b-icon(pack="fas" icon="home" size="is-medium" type="is-success")
-    b-table(:data='userList', :paginated='isPaginated', :per-page='perPage', :current-page.sync='currentPage', :pagination-simple='isPaginationSimple', :default-sort-direction='defaultSortDirection', aria-next-label='Next page', aria-previous-label='Previous page', aria-page-label='Page', aria-current-label='Current page')
+    b-table(empty striped narrowed hoverable mobile-cards :data='userList', :paginated='isPaginated', :per-page='perPage', :current-page.sync='currentPage', :pagination-simple='isPaginationSimple', :default-sort-direction='defaultSortDirection', aria-next-label='Next page', aria-previous-label='Previous page', aria-page-label='Page', aria-current-label='Current page' style="width: 100%")
       template(slot-scope='props')
-        b-table-column(field='id', label='#', width='40', sortable='', numeric='')
+        b-table-column(field='id', label='#', sortable)
           | {{ props.row.id_usuario }}
-        b-table-column(field='dni', label='dni', sortable='')
+        b-table-column(field='dni', label='Dni', sortable)
           | {{ props.row.dni }}
-        b-table-column(field='email', label='email', sortable='')
+        b-table-column(field='nombre', label='Nombre', sortable)
+          | {{ props.row.nombre + ' ' + props.row.apellidos}}
+        b-table-column(field='email', label='E-mail', sortable)
           | {{ props.row.email }}
-        b-table-column(field='provincia', label='provincia', sortable='')
-          | {{ props.row.provincia }}
-        b-table-column(field='date', label='fecha de nacimiento', sortable='', centered='')
+        b-table-column(field='telefono', label='Teléfono', sortable)
+          | {{ props.row.telefono }}
+        b-table-column(field='direccion', label='Direccion', sortable)
+          | {{ props.row.direccion + ' ' + props.row.direccion2 + ', ' + props.row.provincia }}
+        b-table-column(field='date', label='Fecha de Nacimiento', sortable, centered)
           span.tag.is-success
-            | {{ moment(props.row.fecha_nacimiento).format('DD / MM / YYYY') }}
+            | {{ moment.unix(props.row.fecha_nacimiento).format('DD / MM / YYYY') }}
+        b-table-column(field="operaciones", label="Operaciones" centered)
+          .icons-box
+            b-button.icon-button(type='is-danger', icon-left='trash', size="is-medium" @click="handleDelete(props.row.id_usuario)")
+            b-button.icon-button(type="is-primary", icon-left='user-edit', size="is-medium" @click="handleEdit(props.row)")
 </template>
 
 <style lang="sass" scoped>
+  .icons-box
+    display: flex
+    justify-content: space-around
+  .th-wrap
+    user-select: none
 
 </style>
