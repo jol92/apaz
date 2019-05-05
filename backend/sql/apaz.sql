@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-05-2019 a las 22:29:43
+-- Tiempo de generación: 06-05-2019 a las 01:16:54
 -- Versión del servidor: 10.1.38-MariaDB
 -- Versión de PHP: 7.3.4
 
@@ -138,6 +138,16 @@ CREATE TABLE `preferencias` (
   `id_usuario` int(11) NOT NULL,
   `id_caracteristica` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `preferencias`
+--
+
+INSERT INTO `preferencias` (`id`, `id_usuario`, `id_caracteristica`) VALUES
+(6, 3, 2),
+(7, 3, 4),
+(14, 7, 1),
+(15, 7, 3);
 
 -- --------------------------------------------------------
 
@@ -276,6 +286,14 @@ CREATE TABLE `usuarios` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`id_usuario`, `dni`, `email`, `password`, `nombre`, `apellidos`, `telefono`, `direccion`, `fecha_nacimiento`, `id_tipo_usuario`, `id_provincia`, `direccion2`, `id_tipo_vivienda`) VALUES
+(3, '4545421M', 'jorge@jorge.com', '$2b$10$d5MVvZVLSQvXE5PQGO9RF.p1KZmJBoj2U0ANOpDTXJlDS4cux1/Au', 'Jorge', 'Ojeda', 666111222, 'asdasd', 1557957600, 2, 8, 'asdasd', 4),
+(7, '444411122', 'lolazo@lolazo.com', '$2b$10$ZubmYOuKpcf.IZdUG91FHeZSv8PIO0PL14hwCtHnnFE4RyQyQlgLa', 'asdasd', 'aasdasd', 123123123, 'asdasd', 1558044000, 2, 21, 'asdasd', 3);
+
+--
 -- Índices para tablas volcadas
 --
 
@@ -401,7 +419,7 @@ ALTER TABLE `mascotas_adoptadas`
 -- AUTO_INCREMENT de la tabla `preferencias`
 --
 ALTER TABLE `preferencias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `provincias`
@@ -425,7 +443,7 @@ ALTER TABLE `tipos_vivienda`
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Restricciones para tablas volcadas
