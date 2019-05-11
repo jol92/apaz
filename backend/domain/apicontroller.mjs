@@ -24,31 +24,55 @@ const apicontroller = app => {
     ))
 
   // Añadir Usuario
-  app.post('/insertUsuario', (req, _res, _next) => {
+  app.post('/insertUsuario', (req, res, _next) => {
     const { usuario } = req.body
-    bcrypt.hash(usuario.password, 10, function (_err, hash) {
-      knex('usuarios').insert(
-        [
-          {
-            dni: usuario.dni,
-            email: usuario.email,
-            password: hash,
-            nombre: usuario.nombre,
-            apellidos: usuario.apellidos,
-            telefono: usuario.telefono,
-            direccion: usuario.direccion1,
-            fecha_nacimiento: usuario.fecha_nac,
-            id_tipo_usuario: 2,
-            id_provincia: usuario.provincia,
-            direccion2: usuario.direccion2,
-            id_tipo_vivienda: usuario.tipoVivienda
-          }
-        ]
-      ).then(function (response) {
-        const insertPreferencias = usuario.preferencias.map(preferencia => ({ id_usuario: response[0], id_caracteristica: preferencia }))
-        return knex('preferencias').insert(insertPreferencias)
-      })
-        .catch(err => { console.log(err) })
+    knex('usuarios').where('email', usuario.email).then(userList => {
+      if (userList.length === 0) {
+        bcrypt.hash(usuario.password, 10, function (_err, hash) {
+          knex('usuarios').insert(
+            [
+              {
+                dni: usuario.dni,
+                email: usuario.email,
+                password: hash,
+                nombre: usuario.nombre,
+                apellidos: usuario.apellidos,
+                telefono: usuario.telefono,
+                direccion: usuario.direccion1,
+                fecha_nacimiento: usuario.fecha_nac,
+                id_tipo_usuario: 2,
+                id_provincia: usuario.provincia,
+                direccion2: usuario.direccion2,
+                id_tipo_vivienda: usuario.tipoVivienda
+              }
+            ]
+          ).then(function (response) {
+            const insertPreferencias = usuario.preferencias.map(preferencia => ({ id_usuario: response[0], id_caracteristica: preferencia }))
+            return knex('preferencias').insert(insertPreferencias)
+          })
+            .catch(err => { console.log(err) })
+        })
+        res.send('Se ha registrado correctamente. ¡Muchas gracias!')
+      } else {
+        res.send('El email con el que intenta registrarse ya está en uso')
+      }
+    })
+  })
+
+  // Login Usuario
+  app.post('/loginUsuario', (req, res, next) => {
+    const { usuario } = req.body
+    knex('usuarios').where('email', usuario.email).then(function (response) {
+      if (response.length > 0) {
+        if (bcrypt.compareSync(usuario.password, response[0].password)) {
+          response[0].mensaje = 'Bienvenido'
+          res.send(response[0])
+        } else {
+          res.send('¡Ha introducido una contraseña incorrecta!')
+        }
+      } else {
+        res.send('¡El E-mail introducido no existe!')
+      }
     })
   })
 
@@ -78,6 +102,21 @@ const apicontroller = app => {
 
   // Listar características
   app.get('/caracteristicas', (_req, res, _next) => knex('caracteristicas').select('*').then(data => res.send(data)))
+
+  // MASCOTAS
+
+  // Listar mascotas
+  app.get('/mascotas', (_req, res, _next) => knex('mascotas')
+    .join('estados_mascota', 'mascotas.id_estado', '=', 'estados_mascota.id')
+    .select('mascotas.*', 'estados_mascota.nombre_estado')
+    .then(data => res.send(data))
+  )
+
+  // Eliminar mascota
+  app.delete('/deletePet/:petId', (req, res, _next) => {
+    const { petId } = req.params
+    knex('mascotas').where('id', petId).del().then(res.send('Mascota Eliminada')).catch(err => { console.log(err) })
+  })
 }
 
 export default apicontroller
