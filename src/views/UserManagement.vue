@@ -1,7 +1,7 @@
 <script>
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-import ModalUsuario from '@/components/modals/usuario'
+import ModalUsuario from '@/components/modals/usuario/registro'
 const moment = require('moment');
 
 export default {
@@ -11,7 +11,7 @@ export default {
   },
   data() {
     return {
-      moment:moment,
+      moment: moment,
       isPaginated: true,
       isPaginationSimple: true,
       defaultSortDirection: 'asc',
@@ -31,7 +31,6 @@ export default {
       axios.get('http://localhost:3000/apaz/v1/usuarios')
         .then((response) => {
           this.userList = response.data
-          console.log(this.userList)
         })
         .catch(function (error) {
             console.log(error);

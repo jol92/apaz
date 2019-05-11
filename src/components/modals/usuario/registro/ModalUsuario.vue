@@ -1,6 +1,6 @@
 <template lang="pug">
   form(action='')
-    .modal-card(style='width: 700')
+    .modal-card(style='width: 700px')
       header.modal-card-head
         p.modal-card-title ¡Gracias por ayudarnos!
       section.modal-card-body
@@ -102,16 +102,11 @@ export default {
     validateBeforeSubmit() {
       this.$validator.validateAll().then((result) => {
         if (result) {
-          this.$toast.open({
-            message: 'Se ha registrado correctamente. ¡Muchas gracias!',
-            type: 'is-success',
-            position: 'is-bottom'
-          })
+
           this.user.fecha_nac = moment(this.fecha).unix()
           this.user.telefono = parseInt(this.user.telefono)
           this.postUsuario()
           this.$parent.close()
-          this.$parent.fetchData()
           return;
         }
         this.$toast.open({
@@ -153,6 +148,11 @@ export default {
       })
       .then((response) => {
         console.log(response)
+        this.$toast.open({
+          message: response.data,
+          type: 'is-info',
+          position: 'is-bottom'
+        })
       })
       .catch(function (error) {
         console.log(error);

@@ -32,7 +32,10 @@ import {
   faCaretUp,
   faUserEdit,
   faExclamationCircle,
-  faCalendarDay
+  faCalendarDay,
+  faMars,
+  faVenus,
+  faPaw
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
@@ -51,7 +54,10 @@ library.add(
   faCaretUp,
   faUserEdit,
   faExclamationCircle,
-  faCalendarDay
+  faCalendarDay,
+  faMars,
+  faVenus,
+  faPaw
 )
 Vue.component('vue-fontawesome', FontAwesomeIcon)
 

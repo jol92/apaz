@@ -1,13 +1,22 @@
 <script>
-import ModalUsuarioVue from '../modals/usuario/ModalUsuario.vue';
+import ModalUsuarioVue from '@/components/modals/usuario/registro'
+import ModalLogin from '@/components/modals/usuario/login'
 export default {
   name: 'NavBar',
   data() {
     return {
-      scrollPosition: null
+      scrollPosition: null,
+      userLoged: {
+        id_tipo_usuario: 2,
+        loged: false
+      }
     };
   },
   mounted() {
+    if(localStorage.getItem('logedUser')) {
+      this.userLoged.loged = true
+      this.userLoged = JSON.parse(localStorage.getItem('logedUser'))
+    }
     window.addEventListener('scroll', this.updateScroll);
   },
   methods: {
@@ -29,6 +38,17 @@ export default {
         component: ModalUsuarioVue,
         hasModalCard: true,
       })
+    },
+    loginModal() {
+      this.$modal.open({
+        parent: this,
+        component: ModalLogin,
+        hasModalCard: true,
+      })
+    },
+    logout(){
+      localStorage.removeItem('logedUser')
+      this.$router.go()
     }
   }
 }
@@ -46,19 +66,25 @@ export default {
       #nav-menu.navbar-menu
         .navbar-start
           router-link.navbar-item(to="home")
-            | Home
-          router-link.navbar-item(to="userManagement")
-            | User Managmenet
-          .navbar-item.has-dropdown.is-hoverable
+            | Inicio
+          router-link.navbar-item(to="home")
+            | Mascotas en Adopción
+          router-link.navbar-item(to="")
+            | Ayúdanos
+          router-link.navbar-item(to="")
+            | Sobre nosotros
+          .navbar-item.has-dropdown.is-hoverable(v-if="this.userLoged.id_tipo_usuario === 1")
             a.navbar-link
-              | More
+              | Administración
             .navbar-dropdown
-              a.navbar-item
-                | About
-              a.navbar-item
-                | Jobs
-              a.navbar-item
-                | Contact
+              router-link.navbar-item(to="userManagement")
+                | Administrar Usuarios
+              router-link.navbar-item(to="petManagment")
+                | Administrar Mascotas
+              router-link.navbar-item(to="")
+                | Administrar Casas de acogida
+              router-link.navbar-item(to="")
+                | Administrar Adopciones
               hr.navbar-divider
               a.navbar-item
                 | Report an issue
@@ -67,8 +93,10 @@ export default {
             .buttons
               a.button.is-primary(@click="userModal()")
                 strong Ayúdanos 
-              a.button.is-light
-                | Entrar
+              a.button.is-link(@click="loginModal()" v-if="this.userLoged.loged == false")
+                strong Entrar
+              a.button.is-danger(@click="logout()" v-else) 
+                strong Salir
 </template>
 
 <style lang="sass" scoped>
