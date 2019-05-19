@@ -81,9 +81,9 @@ export default {
                 | Administrar Usuarios
               router-link.navbar-item(to="petManagment")
                 | Administrar Mascotas
-              router-link.navbar-item(to="")
+              router-link.navbar-item(to="receptionManagment")
                 | Administrar Casas de acogida
-              router-link.navbar-item(to="")
+              router-link.navbar-item(to="adoptionManagment")
                 | Administrar Adopciones
               hr.navbar-divider
               a.navbar-item

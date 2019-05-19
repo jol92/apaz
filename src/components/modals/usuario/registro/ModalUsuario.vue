@@ -2,7 +2,7 @@
   form(action='')
     .modal-card(style='width: 700px')
       header.modal-card-head
-        p.modal-card-title ¡Gracias por ayudarnos!
+        p.modal-card-title {{ titulo }}
       section.modal-card-body
         form(@submit.prevent='validateBeforeSubmit')
           b-field(label='Nombre *', :type="{'is-danger': errors.has('nombre')}", :message="errors.first('nombre')")
@@ -57,7 +57,7 @@
               | Estoy de acuerdo con los términos y condiciones
 
           .button-box
-            button.button.is-primary(type='submit')  Resgistrarse
+            button.button.is-primary(type='submit')  {{ titulo2 }}
             button.button.is-danger(type='button', @click='$parent.close()') Cerrar
 </template>
 
@@ -67,10 +67,19 @@ import VueAxios from 'vue-axios'
 const moment = require('moment');
 
 export default {
+  name:'ModalUsuario',
+  props: {
+    user_edit: {
+      type: Object,
+      default: null
+    }
+  },
   data() {
     return {
       moment:moment,
       fecha: null,
+      titulo: '¡Gracias por ayudarnos!',
+      titulo2: 'Registrarse',
       user: {
         nombre: null,
         apellidos: null,
@@ -94,6 +103,24 @@ export default {
     }
   },
   mounted() {
+    console.log(this.user_edit)
+    if(this.user_edit != null) {
+      this.getPreferenciasUsuario(this.user_edit.id_usuario)
+      this.user.nombre = this.user_edit.nombre
+      this.user.apellidos = this.user_edit.apellidos
+      this.fecha = new Date(this.user_edit.fecha_nacimiento * 1000)
+      this.user.dni = this.user_edit.dni
+      this.user.email = this.user_edit.email
+      this.user.telefono = this.user_edit.telefono
+      this.user.provincia = this.user_edit.id_provincia
+      this.user.direccion1 = this.user_edit.direccion
+      this.user.direccion2 = this.user_edit.direccion2
+      this.user.tipoVivienda = this.user_edit.id_tipo_vivienda
+      this.user.password = null
+      this.user.id_usuario = this.user_edit.id_usuario
+      this.titulo = 'Editar información'
+      this.titulo2 = 'Editar'
+    }
     this.getProvincias()
     this.getViviendas()
     this.getCaracteristicas()
@@ -102,12 +129,11 @@ export default {
     validateBeforeSubmit() {
       this.$validator.validateAll().then((result) => {
         if (result) {
-
           this.user.fecha_nac = moment(this.fecha).unix()
           this.user.telefono = parseInt(this.user.telefono)
-          this.postUsuario()
+          this.user_edit != null ? this.updateUsuario() : this.postUsuario()
           this.$parent.close()
-          return;
+          return
         }
         this.$toast.open({
           message: 'Ha ocurrido un error. Por favor revise el formulario',
@@ -116,11 +142,18 @@ export default {
         })
       });
     },
+    getPreferenciasUsuario(id) {
+      axios.get(`http://localhost:3000/apaz/v1/getPreferenciasUsuario/${id}`)
+        .then(res => {
+          for (const caracteristica of res.data) {
+            this.asignarPreferencia(caracteristica.caracteristicas)
+          }
+        })
+    },
     getProvincias(){
       axios.get('http://localhost:3000/apaz/v1/provincias')
         .then((response) => {
           this.provinciasList = response.data
-          console.log(this.provinciasList)
         })
         .catch(function (error) {
             console.log(error);
@@ -130,7 +163,6 @@ export default {
       axios.get('http://localhost:3000/apaz/v1/viviendas')
         .then((response) => {
           this.viviendasList = response.data
-          console.log(this.viviendasList)
         })
         .catch(function (error) {
             console.log(error);
@@ -147,7 +179,6 @@ export default {
         usuario: this.user
       })
       .then((response) => {
-        console.log(response)
         this.$toast.open({
           message: response.data,
           type: 'is-info',
@@ -158,7 +189,22 @@ export default {
         console.log(error);
       });
     },
-    asignarPreferencia: function (caracteristica) {
+    updateUsuario(){
+      axios.post('http://localhost:3000/apaz/v1/updateUsuario', {
+        usuario: this.user
+      })
+      .then((response) => {
+        this.$toast.open({
+          message: response.data,
+          type: 'is-info',
+          position: 'is-bottom'
+        })
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    },
+    asignarPreferencia(caracteristica) {
       this.caracteristicasList = this.caracteristicasList.filter(item => item.id !== caracteristica.id)
       this.caracteristicasUserList.push(caracteristica)
       this.user.preferencias.push(caracteristica.id)

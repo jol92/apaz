@@ -16,6 +16,9 @@ import 'buefy/dist/buefy.css'
 import VeeValidate, { Validator } from 'vee-validate'
 import es from 'vee-validate/dist/locale/es'
 
+// Vue Editor
+import { VueEditor } from 'vue2-editor'
+
 // FontAwesome
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -35,7 +38,9 @@ import {
   faCalendarDay,
   faMars,
   faVenus,
-  faPaw
+  faPaw,
+  faEdit,
+  faUpload
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
@@ -57,10 +62,13 @@ library.add(
   faCalendarDay,
   faMars,
   faVenus,
-  faPaw
+  faPaw,
+  faEdit,
+  faUpload
 )
 Vue.component('vue-fontawesome', FontAwesomeIcon)
 
+Vue.use(VueEditor)
 Vue.use(VueAxios, axios)
 Vue.use(Buefy, {
   defaultIconPack: 'fa',

@@ -1,8 +1,9 @@
 <template lang="pug">
   .container-fluid
-    router-link(to="PetAdd")
-      b-button.anyadir(size='is-medium', icon-left='paw' type='is-success') Añadir
-    b-table(empty striped narrowed hoverable mobile-cards :data='petList', :paginated='isPaginated', :per-page='perPage', :current-page.sync='currentPage', :pagination-simple='isPaginationSimple', :default-sort-direction='defaultSortDirection', aria-next-label='Next page', aria-previous-label='Previous page', aria-page-label='Page', aria-current-label='Current page' style="width: 100%")
+    custom-title(title="Administrar Mascotas")
+    .div-botton
+      b-button.icon-button(type='is-info', icon-left='paw', size="is-medium" @click="$router.push('petAdd')") Nueva mascota
+    b-table(empty striped narrowed hoverable mobile-cards :data='petList', :paginated='isPaginated', :per-page='perPage', :current-page.sync='currentPage', :pagination-simple='isPaginationSimple', :default-sort-direction='defaultSortDirection', default-sort='id' aria-next-label='Next page', aria-previous-label='Previous page', aria-page-label='Page', aria-current-label='Current page' style="width: 100%")
       template(slot-scope='props')
         b-table-column(field='id', label='#', sortable)
           | {{ props.row.id }}
@@ -17,20 +18,24 @@
           span.tag.is-success
             | {{ moment(props.row.fecha_registro).format('DD / MM / YYYY') }}
         b-table-column(field='genero', label='Género', sortable, centered)
-          b-icon(pack='fas', :icon="props.row.genero === 1 ? 'mars' : 'venus'")
+          b-icon(pack='fas', :icon="props.row.genero === 0 ? 'mars' : 'venus'")
         b-table-column(field="operaciones", label="Operaciones" centered)
           .icons-box
             b-button.icon-button(type='is-danger', icon-left='trash', size="is-medium" @click="handleDelete(props.row.id)")
-            b-button.icon-button(type="is-primary", icon-left='user-edit', size="is-medium" @click="handleEdit(props.row)")
+            b-button.icon-button(type="is-primary", icon-left='edit', size="is-medium" @click="handleEdit(props.row)")
 </template>
 
 <script>
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 const moment = require('moment')
+import Title from '@/components/title'
 
 export default {
   name: 'PetManagment',
+  components: {
+    'custom-title': Title
+  },
   data() {
     return {
       moment: moment,
@@ -41,6 +46,9 @@ export default {
       perPage: 10,
       petList: []
     }
+  },
+  created () {
+    this.fetchData()
   },
   mounted() {
     this.fetchData()
@@ -85,7 +93,4 @@ export default {
   .icons-box
     display: flex
     justify-content: space-around
-  .th-wrap
-    user-select: none
-
 </style>
