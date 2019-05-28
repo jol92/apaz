@@ -1,20 +1,6 @@
-<template>
-<div class="container">
-  <h1>Home</h1>
-  <p>asdsad</p>
-  <p>asdsad</p>
-  <p>asdsad</p>
-  <p>asdsad</p>
-  <p>asdsad</p>
-  <p>asdsad</p>
-  <p>asdsad</p>
-  <p>asdsad</p>
-  <p>asdsad</p>
-  <p>asdsad</p>
-  <p>asdsad</p>
-  <p>asdsad</p>
-  <p>asdsad</p>
-</div>
+<template lang="pug">
+  .container
+    h1 Working
 </template>
 
 <script>
@@ -36,7 +22,6 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-  .container
-    background: rgb(0,123,94)
+
 </style>
 

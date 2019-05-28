@@ -1,7 +1,7 @@
 <template lang="pug">
   .container-fluid
     custom-title(:title="action + ' Mascota'" icon="paw")
-    form.formulario(@submit.prevent='validateBeforeSubmit')
+    form.formulario(@submit.prevent='validateBeforeSubmit' enctype="multipart/form-data")
       b-field(label='Nombre *', :type="{'is-danger': errors.has('nombre')}", :message="errors.first('nombre')")
         b-input(v-model='pet.nombre', name='nombre', v-validate="'required'", placeholder='Introduzca el nombre')
 
@@ -9,7 +9,7 @@
         b-datepicker(placeholder='Pulsa para seleccionar una fecha', editable, icon='calendar-day', name='fecha de nacimiento' v-model='fecha' )
 
       b-field(label='Estado *', :type="{'is-danger': errors.has('estado')}", :message="errors.first('estado')")
-        b-select(v-model='pet.estado', name='estado', placeholder='Seleccione el estado', v-validate="'required'")
+        b-select(v-model='pet.id_estado', name='estado', placeholder='Seleccione el estado', v-validate="'required'")
           option(v-for="(estado, index) in estadosList" :key="estado.id"  :value='estado.id') {{estado.nombre_estado}}
 
       b-field(label='Chip', :type="{'is-danger': errors.has('chip')}", :message="errors.first('chip')")
@@ -17,12 +17,12 @@
      
       b-field.file(label="Seleccione la imagen principal de la mascota *" :type="{'is-danger': errors.has('imagen')}", :message="errors.first('imagen')")
         .upload-box
-          b-upload(v-model='imagen' name="imagen", v-validate="'required'")
+          b-upload(v-model='pet.imagen' name="imagen", v-validate="'required'")
             a.button.is-primary
               b-icon(icon='upload')
               span Click to upload
-          span.file-name(v-if='imagen')
-            | {{ imagen.name }}
+          span.file-name(v-if='pet.imagen')
+            | {{ pet.imagen.name }}
      
       b-field.genero(label="Género *" :type="{'is-danger': errors.has('genero')}", :message="errors.first('genero')")
         .boton-margin
@@ -42,7 +42,7 @@
           b-input.nueva(v-model="new_caracteristica", placeholder="Añadir una nueva característica a la lista..." size="is-small" rounded)
           b-button(type='is-success', icon-right='check' size="is-small" rounded @click="insertarCaracteristica(new_caracteristica)")
       b-field.info(label="Información")
-        vue-editor(v-model="pet.text")
+        vue-editor(v-model="pet.descripcion")
       .button-box(style="width: 100%")
         b-button.is-primary(size="is-medium" native-type="submit")  Añadir Mascota
 </template>
@@ -69,16 +69,15 @@ export default {
         fecha_nacimiento: null,
         chip: null,
         genero: null,
-        estado: null,
+        id_estado: null,
         caracteristicas: [],
-        imagen_name: null,
-        text: ''
+        descripcion: '',
+        imagen: null
       },
       fecha: null,
       caracteristicasList: [],
       caracteristicasPetList: [],
-      new_caracteristica: null,
-      imagen: null
+      new_caracteristica: null
     }
   },
   mounted() {
@@ -89,11 +88,14 @@ export default {
       this.getEstados()
       this.getCaracteristicas()
     },
+    getFiles(files){
+      console.log(this.pet.imagen)
+      console.log(files)
+    },
     getEstados() {
       axios.get('http://localhost:3000/apaz/v1/estados')
         .then(response => {
           this.estadosList = response.data
-          console.log(this.estadosList)
         })
         .catch(err => {
           console.log(err)
@@ -133,10 +135,10 @@ export default {
     validateBeforeSubmit() {
       this.$validator.validateAll().then((result) => {
         if (result) {
+          console.log(this.pet)
           this.fecha != null ? this.pet.fecha_nacimiento = moment(this.fecha).unix() : ''
           this.pet.genero = parseInt(this.pet.genero)
           this.pet.chip = parseInt(this.pet.chip)
-          this.pet.imagen_name = this.imagen.name
           this.postMascota()
           this.$router.push('PetManagment')
         }else {
@@ -149,11 +151,16 @@ export default {
       });
     },
     postMascota(){
-      axios.post('http://localhost:3000/apaz/v1/insertarMascota', {
-        mascota: this.pet
+      const formData = new FormData()
+      formData.append('file', this.pet.imagen)
+      formData.append('mascota', JSON.stringify(this.pet))
+      axios({
+        method: 'POST',
+        url: 'http://localhost:3000/apaz/v1/insertarMascota',
+        data: formData,
+        config: { headers: {'Content-Type': 'multipart/form-data' }}
       })
       .then(response => {
-        console.log(response)
         this.$toast.open({
           message: response.data,
           type: 'is-info',
