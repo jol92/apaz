@@ -1,5 +1,6 @@
 import knex from '../infraestructure/knex'
 import bcrypt from 'bcrypt'
+import upload from '../infraestructure/multer'
 
 const apicontroller = app => {
   app.use(function (req, res, next) {
@@ -190,24 +191,21 @@ const apicontroller = app => {
   })
 
   // Añadir mascota
-  app.post('/insertarMascota', (req, res, _next) => {
-    const { mascota } = req.body
-    knex('mascotas').insert(
-      [
-        {
-          nombre: mascota.nombre,
-          fecha_nacimiento: mascota.fecha_nacimiento,
-          id_estado: mascota.estado,
-          chip: mascota.chip,
-          genero: mascota.genero,
-          imagen: mascota.imagen_name,
-          descripcion: mascota.text
-        }
-      ]
-    ).then(res => {
-      const insertarCaracteristicas = mascota.caracteristicas.map(caracteristica => ({ id_mascota: res[0], id_caracteristica: caracteristica }))
-      return knex('caracteristicas_mascota').insert(insertarCaracteristicas)
-    })
+  app.post('/insertarMascota', upload.single('file'), (req, res, _next) => {
+    const mascota = JSON.parse(req.body.mascota)
+    const imagen = req.file ? req.file.filename : 'No image'
+    const caracteristicas = mascota.caracteristicas
+    delete mascota.caracteristicas
+    const mascotaFormateada = {
+      ...mascota,
+      imagen
+    }
+    console.log(mascotaFormateada)
+    knex('mascotas').insert(mascotaFormateada)
+      .then(res => {
+        const insertarCaracteristicas = caracteristicas.map(caracteristica => ({ id_mascota: res[0], id_caracteristica: caracteristica }))
+        return knex('caracteristicas_mascota').insert(insertarCaracteristicas)
+      })
     res.send('¡La mascota ha sido registrada correctamente!')
   })
   // ESTADOS MASCOTAS
