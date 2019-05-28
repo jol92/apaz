@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-05-2019 a las 22:25:10
+-- Tiempo de generación: 28-05-2019 a las 16:43:15
 -- Versión del servidor: 10.1.38-MariaDB
 -- Versión de PHP: 7.3.4
 
@@ -53,8 +53,7 @@ INSERT INTO `caracteristicas` (`id`, `nombre_caracteristica`) VALUES
 (13, 'conejo'),
 (14, 'pajaro'),
 (15, 'asd'),
-(16, ''),
-(17, 'princeso');
+(17, 'caracteristicaprueba');
 
 -- --------------------------------------------------------
 
@@ -67,19 +66,6 @@ CREATE TABLE `caracteristicas_mascota` (
   `id_caracteristica` int(11) NOT NULL,
   `id_mascota` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Volcado de datos para la tabla `caracteristicas_mascota`
---
-
-INSERT INTO `caracteristicas_mascota` (`id`, `id_caracteristica`, `id_mascota`) VALUES
-(4, 5, 7),
-(5, 17, 7),
-(6, 17, 9),
-(7, 3, 10),
-(8, 10, 10),
-(22, 12, 30),
-(23, 8, 30);
 
 -- --------------------------------------------------------
 
@@ -119,20 +105,6 @@ CREATE TABLE `mascotas` (
   `descripcion` text
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Volcado de datos para la tabla `mascotas`
---
-
-INSERT INTO `mascotas` (`id`, `nombre`, `fecha_nacimiento`, `fecha_registro`, `id_estado`, `chip`, `genero`, `imagen`, `descripcion`) VALUES
-(2, 'Perro 1', NULL, '2019-05-11 19:44:32', 3, NULL, 1, 'a', 'asd'),
-(3, 'Gato 2', NULL, '2019-05-11 19:44:32', 3, NULL, 0, 'a', 'a'),
-(7, 'perro 4', 1557180000, '2019-05-12 18:41:16', 3, NULL, 0, 'perrete.jpg', NULL),
-(8, 'asd', 1557180000, '2019-05-12 18:43:58', 3, NULL, 0, 'perrete.jpg', NULL),
-(9, 'Max', 1557266400, '2019-05-12 19:14:16', 3, NULL, 1, 'perrete.jpg', '<p>Max es un perro de <strong>súper puta madre socio</strong></p>'),
-(10, 'el gato loco', 1557093600, '2019-05-12 19:21:36', 2, NULL, 1, 'perrete.jpg', '<p>asdad</p>'),
-(24, 'xdddddddddddddddddddddddddddddd', 1557093600, '2019-05-12 19:30:38', 2, NULL, 0, 'perrete.jpg', '<p>asd</p>'),
-(30, 'ojooo', 1557180000, '2019-05-19 10:59:40', 2, 2147483647, 0, 'semana-7.pdf', '<p>Lolazo el ojo</p>');
-
 -- --------------------------------------------------------
 
 --
@@ -146,13 +118,6 @@ CREATE TABLE `mascotas_acogidas` (
   `fecha_acogida` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Volcado de datos para la tabla `mascotas_acogidas`
---
-
-INSERT INTO `mascotas_acogidas` (`id`, `id_usuario`, `id_mascota`, `fecha_acogida`) VALUES
-(1, 3, 3, '2019-05-19 16:37:00');
-
 -- --------------------------------------------------------
 
 --
@@ -165,13 +130,6 @@ CREATE TABLE `mascotas_adoptadas` (
   `id_mascota` int(11) NOT NULL,
   `fecha_adopcion` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Volcado de datos para la tabla `mascotas_adoptadas`
---
-
-INSERT INTO `mascotas_adoptadas` (`id`, `id_usuario`, `id_mascota`, `fecha_adopcion`) VALUES
-(7, 3, 2, '2019-05-19 19:58:44');
 
 -- --------------------------------------------------------
 
@@ -347,11 +305,11 @@ INSERT INTO `usuarios` (`id_usuario`, `dni`, `email`, `password`, `nombre`, `ape
 (3, '4545421M', 'jorge@jorge.com', '$2b$10$d5MVvZVLSQvXE5PQGO9RF.p1KZmJBoj2U0ANOpDTXJlDS4cux1/Au', 'Jorge', 'Ojeda', 666111222, 'asdasd', 1557957600, 2, 8, 'asdasd', 4),
 (7, '444411122', 'lolazo@lolazo.com', '$2b$10$ZubmYOuKpcf.IZdUG91FHeZSv8PIO0PL14hwCtHnnFE4RyQyQlgLa', 'asdasd', 'aasdasd', 123123123, 'asdasd', 1558044000, 2, 21, 'asdasd', 3),
 (8, '45454512M', 'lala@lala.com', '$2b$10$fmYtd05e3z.QdVtBp7kbIeX6aGFLy9kj4fYek8Nds5ucFAwmDkbFm', 'Jorge', 'Ojeda', 777888999, '123', 1556748000, 2, 5, '123', 4),
-(9, '444222111', 'asd@asd.com', '$2b$10$8WtzjdPl1DFp/ilMUrVomO0o97ByExQP16qCIiA/jP5pAUrwpeCii', 'jorge', 'ojeda', 666111222, 'asd', 1557352800, 2, 48, 'asd', 4),
+(9, '444222111', 'asd@asd.com', '$2b$10$8WtzjdPl1DFp/ilMUrVomO0o97ByExQP16qCIiA/jP5pAUrwpeCii', 'cxcxc', 'El', 666111222, 'asd', 1557352800, 2, 48, 'asd', 4),
 (11, '45945472A', 'admin@admin.com', '$2b$10$B8E2nYdT0YIHdGK2SDLOh.yLCV4ko1mTn9yduK6iqInzAHzDNqfIG', 'admin', 'admin', 666666666, 'asd', 1557180000, 1, 19, 'asd', 3),
 (12, '123123123', 'asd@xd.com', '$2b$10$t/nrBJIZGu6b/Y5dQbWWuuznw/w6h/yhQt//vKEnlk2PMWutBsH6K', 'xd', 'xd', 666999888, 'asd', 1556748000, 2, 20, 'asd', 3),
-(13, '45945472M', 'lolazo@hotmail.com', '$2b$10$isZ5L3QAn2ExBhuqJRG75.ithgl19.zBiyHiZwjzqdlQIulDS8rWe', 'Pedrito', 'Lolazo', 666777888, 'dasd', 1556661600, 2, 22, 'asd', 2),
-(14, '444222111', 'zzz@aaa.com', '$2b$10$oNMFMClAEUVxB3Fto3yMK.5v0byyJE538nLJy8WBNcVPRhtifrNb6', 'zzzzzzzzzzzzzzzzzzzzzz', 'zzzzzzzzzzzzzzz', 123123123, 'asd', 1557266400, 2, 22, 'asd', 2);
+(13, '45945472M', 'mail@mail.com', '$2b$10$isZ5L3QAn2ExBhuqJRG75.ithgl19.zBiyHiZwjzqdlQIulDS8rWe', 'usuario', 'erm', 666777888, 'dasd', 1556661600, 2, 22, 'asd', 2),
+(14, '444222111', 'zzz@aaa.com', '$2b$10$oNMFMClAEUVxB3Fto3yMK.5v0byyJE538nLJy8WBNcVPRhtifrNb6', 'User', 'zzzzzzzzzzzzzzz', 123123123, 'asd', 1557266400, 2, 22, 'asd', 2);
 
 --
 -- Índices para tablas volcadas
@@ -449,7 +407,7 @@ ALTER TABLE `caracteristicas`
 -- AUTO_INCREMENT de la tabla `caracteristicas_mascota`
 --
 ALTER TABLE `caracteristicas_mascota`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `estados_mascota`
@@ -461,19 +419,19 @@ ALTER TABLE `estados_mascota`
 -- AUTO_INCREMENT de la tabla `mascotas`
 --
 ALTER TABLE `mascotas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT de la tabla `mascotas_acogidas`
 --
 ALTER TABLE `mascotas_acogidas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `mascotas_adoptadas`
 --
 ALTER TABLE `mascotas_adoptadas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `preferencias`
