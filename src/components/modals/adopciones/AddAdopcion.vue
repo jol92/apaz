@@ -19,9 +19,9 @@
             b-table.data_table(:data='mascotasList', :selected.sync='selected_mascota', focusable='' empty striped narrowed hoverable mobile-cards :paginated='isPaginated', :per-page='perPage', :current-page.sync='currentTable2Page', :pagination-simple='isPaginationSimple', :default-sort-direction='defaultSortDirection', default-sort='id' aria-next-label='Next page', aria-previous-label='Previous page', aria-page-label='Page', aria-current-label='Current page' style="width: 100%")
               template(slot-scope='props')
                 b-table-column(field='id', label='#', sortable)
-                  | {{ props.row.id }}
+                  | {{ props.row.mascotas.id }}
                 b-table-column(field='nombre', label='Nombre', sortable)
-                  | {{ props.row.nombre }}
+                  | {{ props.row.mascotas.nombre }}
         .button-box
           button.button.is-primary(type='button', @click="addAccion")  Añadir
           button.button.is-danger(type='button', @click='$parent.close()') Cerrar
@@ -111,7 +111,7 @@ export default {
     },
     postAdopcion() {
       let adopcion = {
-        id_mascota: this.selected_mascota.id,
+        id_mascota: this.selected_mascota.mascotas.id,
         id_usuario: this.selected_usuario.id_usuario
       }
       axios.post('http://localhost:3000/apaz/v1/insertarAdopcion', {
@@ -131,7 +131,7 @@ export default {
     },
     postAcogida() {
       let acogida = {
-        id_mascota: this.selected_mascota.id,
+        id_mascota: this.selected_mascota.mascotas.id,
         id_usuario: this.selected_usuario.id_usuario
       }
       axios.post('http://localhost:3000/apaz/v1/insertarAcogida', {

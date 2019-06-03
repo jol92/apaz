@@ -7,6 +7,7 @@ import UserManagement from '../views/managment/UserManagement'
 import PetManagment from '../views/managment/PetManagment'
 import PetAdd from '../views/managment/PetAdd'
 import AdoptionManagment from '../views/Managment/AdoptionManagment'
+import PetProfile from '../views/PetProfile'
 
 Vue.use(Router)
 
@@ -21,27 +22,31 @@ let router = new Router({
       component: Home
     },
     {
-      path: '/userManagement',
+      path: '/user-management',
       component: UserManagement
     },
     {
-      path: '/petManagment',
+      path: '/pet-management',
       component: PetManagment
     },
     {
-      path: '/petAdd',
+      path: '/pet-add',
       component: PetAdd,
       hidden: true
     },
     {
-      path: '/adoptionManagment',
+      path: '/adoption-management',
       component: AdoptionManagment,
       props: { accion: 'Adopcion' }
     },
     {
-      path: '/receptionManagment',
+      path: '/reception-management',
       component: AdoptionManagment,
       props: { accion: 'Acogida' }
+    },
+    {
+      path: '/pet-profile/:id',
+      component: PetProfile
     }
   ]
 })

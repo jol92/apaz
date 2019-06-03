@@ -1,27 +1,171 @@
 <template lang="pug">
   .container
-    h1 Working
+    .first-content
+      custom-title(title="Cientos de animales abandonados y/o maltratados necesitan de tu colaboración, únete a nuestra causa.")
+      .columns
+        .column
+          section
+            b-collapse.card(:open="false" aria-id='contentIdForA11y3')
+              .card-header(slot='trigger', slot-scope='props', role='button', aria-controls='contentIdForA11y3')
+                p.card-header-title
+                  | Haz un donativo
+                a.card-header-icon
+                  b-icon(:icon="props.open ? 'caret-down' : 'caret-up'")
+              .card-content
+                .content
+                  b ¡Ayúdanos económicamente haciendo un donativo o haciendo teaming con nosotros!
+                  p Podrás ayudar a cientos de animales con sólo un poco de tiempo y dinero blablabla, así podrás lalala lo que sea ya tu sabes xd
+              footer.card-footer
+                a.card-footer-item Donar
+                a.card-footer-item Teaming
+        .column
+          section
+            b-collapse.card(:open="false" aria-id='contentIdForA11y3')
+              .card-header(slot='trigger', slot-scope='props', role='button', aria-controls='contentIdForA11y3')
+                p.card-header-title
+                  | Adopta
+                a.card-header-icon
+                  b-icon(:icon="props.open ? 'caret-down' : 'caret-up'")
+              .card-content
+                .content
+                  b ¿Quieres adoptar a tu nuevo mejor amigo?
+                  p Adoptando a uno de nuestros animales le estarás dando una segunda oportunidad a blablablalba
+              footer.card-footer
+                a.card-footer-item Ver mascotas en adopción
+        .column
+          section
+            b-collapse.card(:open="false" aria-id='contentIdForA11y3')
+              .card-header(slot='trigger', slot-scope='props', role='button', aria-controls='contentIdForA11y3')
+                p.card-header-title
+                  | Acoge
+                a.card-header-icon
+                  b-icon(:icon="props.open ? 'caret-down' : 'caret-up'")
+              .card-content
+                .content
+                  b ¡Tenemos mascotas que necesitan una casa de acogida urgente, ayúdanos!
+                  p Siendo casa de acogida podrás ayudar a nuestros amigos mientras encuentran su hogar
+              footer.card-footer
+                a.card-footer-item Ver mascotas en acogida
+    .second-content
+      custom-title(title="Nuestras mascotas en adopción")
+      b-pagination(:total="pagination.total" :current.sync="pagination.current" :per-page="pagination.perPage" aria-next-label="Next page" aria-previous-label="Previous page" aria-page-label="Page" aria-current-label="Current page")
+      .lista-animales
+        .columns
+          .column(v-for="mascota in petList" :key="mascota.id")
+            .card(@click="mascotaClick(mascota.mascotas.id)")
+              .card-image
+                figure.image.is-4by3
+                  img(:src="ruta + mascota.mascotas.imagen")
+              .card-content
+                .media
+                  .media-content
+                    p.title.is-4 {{ mascota.mascotas.nombre }}
+                .content
+                  p(v-if="mascota.mascotas.fecha_nacimiento != null") Fecha de nacimiento: {{ moment.unix(mascota.mascotas.fecha_nacimiento).format('DD/MM/YYYY') }}
+                  p(v-else) Fecha de nacimiento: Desconocida
+                  p(v-if="mascota.mascotas.genero === 0") Macho 
+                    b-icon(pack='fas', :icon="mascota.mascotas.genero === 0 ? 'mars' : 'venus'")
+                  p(v-else) Hembra
+                    b-icon(pack='fas', :icon="mascota.mascotas.genero === 0 ? 'mars' : 'venus'")
+                  p(v-if="mascota.mascotas.id_estado === 3") En Adopción / Acogida
+                  p(v-else-if="mascota.mascotas.id_estado === 2") En adopción
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      scrollPosition: null
-    };
-  },
-  mounted() {
-    window.addEventListener('scroll', this.updateScroll);
-  },
-  methods: {
-    updateScroll() {
-      this.scrollPosition = window.scrollY
+  import Title from '@/components/title'
+  import axios from 'axios'
+  import VueAxios from 'vue-axios'
+  const moment = require('moment')
+
+  export default {
+    name: 'Home',
+    components: {
+      'custom-title': Title
+    },
+    data() {
+      return {
+        moment: moment,
+        ruta: '../../static/img/',
+        petList: [],
+        scrollPosition: null,
+        pagination: {
+          total: 200,
+          current: 1,
+          perPage: 20,
+        }
+      };
+    },
+    mounted() {
+      this.fetchData()
+      window.addEventListener('scroll', this.updateScroll);
+      console.log(this.petList)
+    },
+    methods: {
+      fetchData() {
+        this.getAllPets()
+      },
+      mascotaClick(id) {
+        console.log(id)
+        this.$router.push({ path: `pet-profile/${id}`, params: {id: id }})
+      },
+      getAllPets() {
+        axios.get('http://localhost:3000/apaz/v1/mascotasNoAdoptadas').then(response =>{
+          this.petList = response.data
+          console.log(this.petList)
+        }).catch(error =>{
+          console.log(error)
+        })
+      },
+      updateScroll() {
+        this.scrollPosition = window.scrollY
+      }
     }
   }
-};
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass">
+  .content
+    text-align: left !important
+    .second-content
+      .columns
+        display: flex
+        flex-wrap: wrap
+        justify-content: center
+        .column
+          max-width: 320px
+          min-width: 320px
+          .card
+            cursor: pointer
+          .card:hover
+            -webkit-animation: shadow-drop-2-center 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both
+            animation: shadow-drop-2-center 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both
+      ul.pagination-list
+        list-style-type: none
+      .content
+        p
+          font-size: medium
 
+    @-webkit-keyframes shadow-drop-2-center
+      0%
+        -webkit-transform: translateZ(0)
+        transform: translateZ(0)
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0)
+
+      100%
+        -webkit-transform: translateZ(50px)
+        transform: translateZ(50px)
+        box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.35)
+
+
+    @keyframes shadow-drop-2-center
+      0%
+        -webkit-transform: translateZ(0)
+        transform: translateZ(0)
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0)
+
+      100%
+        -webkit-transform: translateZ(50px)
+        transform: translateZ(50px)
+        box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.35)
 </style>
 

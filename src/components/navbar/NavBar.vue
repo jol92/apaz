@@ -58,16 +58,14 @@ export default {
   header
     nav.navbar(role='navigation', aria-label='main navigation')
       .navbar-brand
-        router-link.navbar-item.logo(to="home")
+        router-link.navbar-item.logo(to="/home")
         a.navbar-burger.burger(role='button', aria-label='menu', aria-expanded='false', data-target='nav-menu' @click="toggleNav")
           span(aria-hidden='true')
           span(aria-hidden='true')
           span(aria-hidden='true')
       #nav-menu.navbar-menu
         .navbar-start
-          router-link.navbar-item(to="home")
-            | Inicio
-          router-link.navbar-item(to="home")
+          router-link.navbar-item(to="/home")
             | Mascotas en Adopción
           router-link.navbar-item(to="")
             | Ayúdanos
@@ -77,13 +75,13 @@ export default {
             a.navbar-link
               | Administración
             .navbar-dropdown
-              router-link.navbar-item(to="userManagement")
+              router-link.navbar-item(to="/user-management")
                 | Administrar Usuarios
-              router-link.navbar-item(to="petManagment")
+              router-link.navbar-item(to="/pet-management")
                 | Administrar Mascotas
-              router-link.navbar-item(to="receptionManagment")
+              router-link.navbar-item(to="/reception-management")
                 | Administrar Casas de acogida
-              router-link.navbar-item(to="adoptionManagment")
+              router-link.navbar-item(to="/adoption-management")
                 | Administrar Adopciones
               hr.navbar-divider
               a.navbar-item

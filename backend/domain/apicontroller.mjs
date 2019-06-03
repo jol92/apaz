@@ -144,6 +144,16 @@ const apicontroller = app => {
     }
   })
 
+  // Caracteristica por id_mascota
+  app.get('/getCaracteristicasMascota/:mascotaId', (req, res, _next) => {
+    const { mascotaId } = req.params
+    knex('caracteristicas_mascota')
+      .join('caracteristicas', 'caracteristicas_mascota.id_caracteristica', '=', 'caracteristicas.id')
+      .where('id_mascota', mascotaId)
+      .options({nestTables: true})
+      .then(data => res.send(data))
+  })
+
   // PREFERENCIAS
 
   // Preferencias por id_usuario
@@ -156,31 +166,40 @@ const apicontroller = app => {
       .then(data => res.send(data))
   })
 
+  // TIPOS MASCOTA
+
+  // Listar tipos
+  app.get('/tipos_mascota', (_req, res, _next) => knex('tipos_mascota').select('*').then(data => res.send(data)))
+
   // MASCOTAS
 
   // Listar mascotas
   app.get('/mascotas', (_req, res, _next) => knex('mascotas')
     .join('estados_mascota', 'mascotas.id_estado', '=', 'estados_mascota.id')
-    .select('mascotas.*', 'estados_mascota.nombre_estado')
+    .join('tipos_mascota', 'mascotas.id_tipo', '=', 'tipos_mascota.id')
+    .select('mascotas.*', 'estados_mascota.nombre_estado', 'tipos_mascota.nombre')
+    .options({nestTables: true})
     .then(data => res.send(data))
   )
 
   // Listar mascotas no adoptadas
-  const subquery1 = knex('mascotas_adoptadas').select('id_mascota')
   app.get('/mascotasNoAdoptadas', (_req, res, _next) => knex('mascotas')
     .join('estados_mascota', 'mascotas.id_estado', '=', 'estados_mascota.id')
-    .select('mascotas.*', 'estados_mascota.nombre_estado')
-    .whereNotIn('mascotas.id', subquery1)
+    .join('tipos_mascota', 'mascotas.id_tipo', '=', 'tipos_mascota.id')
+    .select('mascotas.*', 'estados_mascota.nombre_estado', 'tipos_mascota.nombre')
+    .where('mascotas.id_estado', '!=', 1)
+    .options({nestTables: true})
     .then(data => res.send(data))
   )
 
   // Listar mascotas no adoptadas y no acogidas
-  const subquery2 = knex('mascotas_acogidas').select('id_mascota')
   app.get('/mascotasDisponibles', (_req, res, _next) => knex('mascotas')
     .join('estados_mascota', 'mascotas.id_estado', '=', 'estados_mascota.id')
-    .select('mascotas.*', 'estados_mascota.nombre_estado')
-    .whereNotIn('mascotas.id', subquery1)
-    .whereNotIn('mascotas.id', subquery2)
+    .join('tipos_mascota', 'mascotas.id_tipo', '=', 'tipos_mascota.id')
+    .select('mascotas.*', 'estados_mascota.nombre_estado', 'tipos_mascota.nombre')
+    .where('mascotas.id_estado', '!=', 1)
+    .where('mascotas.id_estado', '!=', 2)
+    .options({nestTables: true})
     .then(data => res.send(data))
   )
 
@@ -208,6 +227,18 @@ const apicontroller = app => {
       })
     res.send('¡La mascota ha sido registrada correctamente!')
   })
+
+  // Mostrar una mascota
+  app.get('/mascotas/:mascotaId', (req, res, _next) => {
+    const { mascotaId } = req.params
+    knex('mascotas')
+      .join('estados_mascota', 'mascotas.id_estado', '=', 'estados_mascota.id')
+      .join('tipos_mascota', 'mascotas.id_tipo', '=', 'tipos_mascota.id')
+      .select('mascotas.*', 'estados_mascota.nombre_estado', 'tipos_mascota.nombre')
+      .where('mascotas.id', mascotaId)
+      .options({nestTables: true})
+      .then(data => res.send(data))
+  })
   // ESTADOS MASCOTAS
 
   // Listar estados
@@ -228,9 +259,16 @@ const apicontroller = app => {
   )
 
   // Eliminar adopcion
-  app.delete('/deleteAdopcion/:adopcionId', (req, res, _next) => {
-    const { adopcionId } = req.params
-    knex('mascotas_adoptadas').where('id', adopcionId).del().then(res.send('Adopción Eliminada')).catch(err => { console.log(err) })
+  app.delete('/deleteAdopcion/:adopcionId/:mascotaId', (req, res, _next) => {
+    const adopcionId = parseInt(req.params.adopcionId)
+    const mascotaID = parseInt(req.params.mascotaId)
+    knex('mascotas_adoptadas')
+      .where('id', adopcionId)
+      .del()
+      .then(function (response) {
+        return knex('mascotas').where('id', mascotaID).update('id_estado', '3')
+      }).catch(err => { console.log(err) })
+    res.send('Adopción Eliminada')
   })
 
   // Añadir adopcion
@@ -243,9 +281,9 @@ const apicontroller = app => {
           id_mascota: adopcion.id_mascota
         }
       ]
-    ).then(
-      knex('mascotas').where('id', adopcion.id_mascota).update('id_estado', '1')
-    ).catch(err => { console.log(err) })
+    ).then(function (response) {
+      return knex('mascotas').where('id', adopcion.id_mascota).update('id_estado', '1')
+    }).catch(err => { console.log(err) })
     res.send('¡La adopción se ha registrado correctamente!')
   })
 
@@ -264,9 +302,16 @@ const apicontroller = app => {
   )
 
   // Eliminar acogida
-  app.delete('/deleteAcogida/:acogidaId', (req, res, _next) => {
-    const { acogidaId } = req.params
-    knex('mascotas_acogidas').where('id', acogidaId).del().then(res.send('Acogida Eliminada')).catch(err => { console.log(err) })
+  app.delete('/deleteAcogida/:acogidaId/:mascotaId', (req, res, _next) => {
+    const acogidaId = parseInt(req.params.acogidaId)
+    const mascotaID = parseInt(req.params.mascotaId)
+    knex('mascotas_acogidas')
+      .where('id', acogidaId)
+      .del()
+      .then(function (response) {
+        return knex('mascotas').where('id', mascotaID).update('id_estado', '3')
+      }).catch(err => { console.log(err) })
+    res.send('Acogida Eliminada')
   })
 
   // Añadir adopcion
@@ -279,9 +324,9 @@ const apicontroller = app => {
           id_mascota: acogida.id_mascota
         }
       ]
-    ).then(
-      knex('mascotas').where('id', acogida.id_mascota).update('id_estado', '2')
-    ).catch(err => { console.log(err) })
+    ).then(function (response) {
+      return knex('mascotas').where('id', acogida.id_mascota).update('id_estado', '2')
+    }).catch(err => { console.log(err) })
     res.send('¡La acogida se ha registrado correctamente!')
   })
 

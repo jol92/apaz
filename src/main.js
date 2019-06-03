@@ -40,7 +40,13 @@ import {
   faVenus,
   faPaw,
   faEdit,
-  faUpload
+  faUpload,
+  faHeart,
+  faVenusMars,
+  faBirthdayCake,
+  faBone,
+  faDog,
+  faCat
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
@@ -64,7 +70,13 @@ library.add(
   faVenus,
   faPaw,
   faEdit,
-  faUpload
+  faUpload,
+  faHeart,
+  faVenusMars,
+  faBirthdayCake,
+  faBone,
+  faDog,
+  faCat
 )
 Vue.component('vue-fontawesome', FontAwesomeIcon)
 

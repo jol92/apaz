@@ -27,8 +27,8 @@
         b-table-column(field="operaciones", label="Operaciones" centered)
           .icons-box
             b-button.icon-button(type="is-primary", icon-left='info-circle', size="is-medium" @click="handleInfo(props.row.usuarios)")
-            b-button.icon-button(type='is-danger', icon-left='trash', size="is-medium" @click="handleDelete(props.row.mascotas_adoptadas.id)" v-if="accion === 'Adopcion'")
-            b-button.icon-button(type='is-danger', icon-left='trash', size="is-medium" @click="handleDelete(props.row.mascotas_acogidas.id)" v-else-if="accion === 'Acogida'")
+            b-button.icon-button(type='is-danger', icon-left='trash', size="is-medium" @click="handleDelete(props.row.mascotas_adoptadas.id, props.row.mascotas_adoptadas.id_mascota)" v-if="accion === 'Adopcion'")
+            b-button.icon-button(type='is-danger', icon-left='trash', size="is-medium" @click="handleDelete(props.row.mascotas_acogidas.id, props.row.mascotas_acogidas.id_mascota)" v-else-if="accion === 'Acogida'")
 </template>
 
 <script>
@@ -111,8 +111,8 @@ export default {
       this.accion === 'Acogida' ? lista = this.dataList2 : lista = this.dataList1
       return lista
     },
-    deleteAdopcion(id){
-      axios.delete(`http://localhost:3000/apaz/v1/deleteAdopcion/${id}`)
+    deleteAdopcion(id, id_mascota){
+      axios.delete(`http://localhost:3000/apaz/v1/deleteAdopcion/${id}/${id_mascota}`)
       .then((response) => {
         this.$toast.open(response.data)
         this.fetchData()
@@ -121,8 +121,9 @@ export default {
         console.log(error);
       })
     },
-    deleteAcogida(id){
-      axios.delete(`http://localhost:3000/apaz/v1/deleteAcogida/${id}`)
+    deleteAcogida(id, id_mascota){
+      console.log(id_mascota)
+      axios.delete(`http://localhost:3000/apaz/v1/deleteAcogida/${id}/${id_mascota}`)
       .then((response) => {
         this.$toast.open(response.data)
         this.fetchData()
@@ -131,14 +132,14 @@ export default {
         console.log(error);
       })
     },
-    handleDelete(id) {
+    handleDelete(id, id_mascota) {
       this.$dialog.confirm({
         title: 'Eliminar Adopción',
         message: `¿Está seguro de que quiere <b>eliminar</b> esta ${this.accion}? Esta acción no se podrá deshacer.`,
         confirmText: `Eliminar ${this.accion}`,
         type: 'is-danger',
         hasIcon: true,
-        onConfirm: () => this.accion === 'Adopcion' ? this.deleteAdopcion(id) : this.deleteAcogida(id)
+        onConfirm: () => this.accion === 'Adopcion' ? this.deleteAdopcion(id, id_mascota) : this.deleteAcogida(id, id_mascota)
       })
     },
     handleAdd(accion) {

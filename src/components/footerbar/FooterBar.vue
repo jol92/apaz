@@ -6,18 +6,27 @@ export default {
 
 <template lang="pug">
 footer.footer
-  .content.has-text-centered
-    p
-      strong Bulma
-      |  by 
-      a(href='https://jgthms.com') Jeremy Thomas
-      | . The source code is licensed
-      a(href='http://opensource.org/licenses/mit-license.php') MIT
-      | . The website content
-      |       is licensed 
-      a(href='http://creativecommons.org/licenses/by-nc-sa/4.0/') CC BY NC SA 4.0
-      | .
+  .content
+    p Inicio
+    p Políticas de privacidad
+    p Términos y condiciones
+    p Panel de administración
+    p Reportar error
+  .content
+    .imagen-logo  
+      img(src="'../../static/img/logo.png")
 </template>
 
 <style lang="sass" scoped>
+  .footer
+    display: flex
+    padding-top: 10px
+    padding-bottom: 20px
+    background-color: #c78d8a
+    color: blue
+    .content
+      text-align: center
+      flex: 1
+      .imagen-logo
+        width: 20%
 </style>

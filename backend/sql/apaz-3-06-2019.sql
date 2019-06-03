@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 28-05-2019 a las 16:43:15
+-- Tiempo de generación: 03-06-2019 a las 13:07:29
 -- Versión del servidor: 10.1.38-MariaDB
 -- Versión de PHP: 7.3.4
 
@@ -38,22 +38,11 @@ CREATE TABLE `caracteristicas` (
 --
 
 INSERT INTO `caracteristicas` (`id`, `nombre_caracteristica`) VALUES
-(1, 'grande'),
-(2, 'pequeña'),
-(3, 'mediana'),
-(4, 'cachorro'),
-(5, 'adulta'),
-(6, 'sociable'),
-(7, 'peluda'),
-(8, 'poco peluda'),
-(9, 'ruidosa'),
-(10, 'tranquila'),
-(11, 'perro'),
-(12, 'gato'),
-(13, 'conejo'),
-(14, 'pajaro'),
-(15, 'asd'),
-(17, 'caracteristicaprueba');
+(18, 'asd'),
+(19, 'Pequeño'),
+(20, 'Caracteristica'),
+(21, 'Caracteristica Prueba'),
+(22, 'PPP');
 
 -- --------------------------------------------------------
 
@@ -66,6 +55,17 @@ CREATE TABLE `caracteristicas_mascota` (
   `id_caracteristica` int(11) NOT NULL,
   `id_mascota` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `caracteristicas_mascota`
+--
+
+INSERT INTO `caracteristicas_mascota` (`id`, `id_caracteristica`, `id_mascota`) VALUES
+(25, 19, 60),
+(26, 22, 61),
+(27, 21, 61),
+(28, 19, 63),
+(29, 19, 64);
 
 -- --------------------------------------------------------
 
@@ -102,8 +102,21 @@ CREATE TABLE `mascotas` (
   `chip` int(15) DEFAULT NULL,
   `genero` tinyint(1) NOT NULL,
   `imagen` varchar(150) NOT NULL,
-  `descripcion` text
+  `descripcion` text,
+  `raza` varchar(200) DEFAULT NULL,
+  `id_tipo` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `mascotas`
+--
+
+INSERT INTO `mascotas` (`id`, `nombre`, `fecha_nacimiento`, `fecha_registro`, `id_estado`, `chip`, `genero`, `imagen`, `descripcion`, `raza`, `id_tipo`) VALUES
+(60, 'Toby', 1559599200, '2019-06-03 09:32:20', 2, NULL, 0, '1559554340352-WhatsApp Image 2019-04-30 at 19.39.28(1).jpeg', '<p>Toby es un perro <strong>amistoso </strong>y <strong>amable</strong></p><p><strong style=\"background-color: rgb(255, 255, 102);\">Necesitamos que alguien le acoja urgentemente</strong></p>', 'Cruce de labrador', 1),
+(61, 'Tyreon', 1559599200, '2019-06-03 09:33:58', 3, NULL, 1, '1559554438116-WhatsApp Image 2019-04-30 at 19.39.28.jpeg', '<p>Tyreon macho mix de burterrier, castrado, de 1 año de edad, <strong style=\"background-color: rgb(255, 255, 0);\">testado con perros y gatos</strong>, muy bueno pero nervioso, <strong style=\"color: rgb(255, 255, 0);\">está adiestrado</strong>. Está en residencia.</p>', 'Cruce de doberman', 1),
+(62, 'Mascotita', 1560204000, '2019-06-03 09:38:51', 3, NULL, 0, '1559554731926-WhatsApp Image 2019-04-30 at 19.42.00.jpeg', '<p>Mascotita es un perro blablabla</p><p><strong style=\"background-color: rgb(255, 255, 0);\">Salto de línea</strong></p><blockquote>Cita</blockquote>', 'Mix de pastor aleman', 1),
+(63, 'Gato', 1560290400, '2019-06-03 10:52:05', 3, NULL, 0, '1559559125263-el-gato-necesita-tener-acceso-al-exterior.jpg', '<p>xzczxczxczxcz</p>', '', 2),
+(64, 'GatoViejo', 1265756400, '2019-06-03 11:06:38', 3, NULL, 0, '1559559998426-WhatsApp Image 2019-04-30 at 19.48.46.jpeg', '<blockquote>Gato con más edad para ver si sale bien el moment locale blabla</blockquote>', 'Siamés', 2);
 
 -- --------------------------------------------------------
 
@@ -117,6 +130,13 @@ CREATE TABLE `mascotas_acogidas` (
   `id_mascota` int(11) NOT NULL,
   `fecha_acogida` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `mascotas_acogidas`
+--
+
+INSERT INTO `mascotas_acogidas` (`id`, `id_usuario`, `id_mascota`, `fecha_acogida`) VALUES
+(12, 3, 60, '2019-06-03 09:42:16');
 
 -- --------------------------------------------------------
 
@@ -142,24 +162,6 @@ CREATE TABLE `preferencias` (
   `id_usuario` int(11) NOT NULL,
   `id_caracteristica` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Volcado de datos para la tabla `preferencias`
---
-
-INSERT INTO `preferencias` (`id`, `id_usuario`, `id_caracteristica`) VALUES
-(6, 3, 2),
-(7, 3, 4),
-(14, 7, 1),
-(15, 7, 3),
-(16, 8, 3),
-(17, 8, 13),
-(18, 8, 5),
-(19, 9, 2),
-(20, 9, 4),
-(21, 11, 2),
-(22, 13, 14),
-(23, 14, 12);
 
 -- --------------------------------------------------------
 
@@ -229,6 +231,26 @@ INSERT INTO `provincias` (`id_provincia`, `provincia`) VALUES
 (50, 'Zaragoza'),
 (51, 'Ceuta'),
 (52, 'Melilla');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tipos_mascota`
+--
+
+CREATE TABLE `tipos_mascota` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `tipos_mascota`
+--
+
+INSERT INTO `tipos_mascota` (`id`, `nombre`) VALUES
+(1, 'Perro'),
+(2, 'Gato'),
+(3, 'Otro');
 
 -- --------------------------------------------------------
 
@@ -373,6 +395,12 @@ ALTER TABLE `provincias`
   ADD PRIMARY KEY (`id_provincia`);
 
 --
+-- Indices de la tabla `tipos_mascota`
+--
+ALTER TABLE `tipos_mascota`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `tipos_usuario`
 --
 ALTER TABLE `tipos_usuario`
@@ -401,13 +429,13 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `caracteristicas`
 --
 ALTER TABLE `caracteristicas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT de la tabla `caracteristicas_mascota`
 --
 ALTER TABLE `caracteristicas_mascota`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT de la tabla `estados_mascota`
@@ -419,31 +447,37 @@ ALTER TABLE `estados_mascota`
 -- AUTO_INCREMENT de la tabla `mascotas`
 --
 ALTER TABLE `mascotas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
 -- AUTO_INCREMENT de la tabla `mascotas_acogidas`
 --
 ALTER TABLE `mascotas_acogidas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `mascotas_adoptadas`
 --
 ALTER TABLE `mascotas_adoptadas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `preferencias`
 --
 ALTER TABLE `preferencias`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `provincias`
 --
 ALTER TABLE `provincias`
   MODIFY `id_provincia` int(2) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+
+--
+-- AUTO_INCREMENT de la tabla `tipos_mascota`
+--
+ALTER TABLE `tipos_mascota`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `tipos_usuario`
