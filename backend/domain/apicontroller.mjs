@@ -86,34 +86,31 @@ const apicontroller = app => {
   // Update usuario
   app.post('/updateUsuario', (req, res, _next) => {
     const { usuario } = req.body
-    knex('usuarios').where('id_usuario', usuario.id_usuario).then(userList => {
-      bcrypt.hash(usuario.password, 10, function (_err, hash) {
-        knex('usuarios').update(
-          [
-            {
-              id_usuario: usuario.id_usuario,
-              dni: usuario.dni,
-              email: usuario.email,
-              password: hash,
-              nombre: usuario.nombre,
-              apellidos: usuario.apellidos,
-              telefono: usuario.telefono,
-              direccion: usuario.direccion1,
-              fecha_nacimiento: usuario.fecha_nac,
-              id_tipo_usuario: 2,
-              id_provincia: usuario.provincia,
-              direccion2: usuario.direccion2,
-              id_tipo_vivienda: usuario.tipoVivienda
-            }
-          ]
-        ).then(function (response) {
+    bcrypt.hash(usuario.password, 10, function (_err, hash) {
+      knex('usuarios').update(
+        {
+          dni: usuario.dni,
+          email: usuario.email,
+          password: hash,
+          nombre: usuario.nombre,
+          apellidos: usuario.apellidos,
+          telefono: usuario.telefono,
+          direccion: usuario.direccion1,
+          fecha_nacimiento: usuario.fecha_nac,
+          id_tipo_usuario: 2,
+          id_provincia: usuario.provincia,
+          direccion2: usuario.direccion2,
+          id_tipo_vivienda: usuario.tipoVivienda
+        }
+      )
+        .where('id_usuario', usuario.id_usuario)
+        .then(function (response) {
           const insertPreferencias = usuario.preferencias.map(preferencia => ({ id_usuario: response[0], id_caracteristica: preferencia }))
           return knex('preferencias').insert(insertPreferencias)
         })
-          .catch(err => { console.log(err) })
-      })
-      res.send('La información ha sido actualizada')
+        .catch(err => { console.log(err) })
     })
+    res.send('La información ha sido actualizada')
   })
 
   // Login Usuario
@@ -311,11 +308,12 @@ const apicontroller = app => {
   // ADOPCIONES
 
   // Listar adopciones
-  app.get('/adopciones', (_req, res, _next) => knex('mascotas_adoptadas')
-    .join('mascotas', 'mascotas_adoptadas.id_mascota', '=', 'mascotas.id')
-    .join('usuarios', 'mascotas_adoptadas.id_usuario', '=', 'usuarios.id_usuario')
+  app.get('/adopciones', (_req, res, _next) => knex('mascotas_acogidas_adoptadas')
+    .join('mascotas', 'mascotas_acogidas_adoptadas.id_mascota', '=', 'mascotas.id')
+    .join('usuarios', 'mascotas_acogidas_adoptadas.id_usuario', '=', 'usuarios.id_usuario')
     .join('provincias', 'usuarios.id_provincia', '=', 'provincias.id_provincia')
-    .select('mascotas_adoptadas.*', 'mascotas.*', 'usuarios.*', 'provincias.provincia')
+    .select('mascotas_acogidas_adoptadas.*', 'mascotas.*', 'usuarios.*', 'provincias.provincia')
+    .where('mascotas_acogidas_adoptadas.estado', '=', 1)
     .options({nestTables: true})
     .then(
       data => res.send(data)
@@ -326,39 +324,45 @@ const apicontroller = app => {
   app.delete('/deleteAdopcion/:adopcionId/:mascotaId', (req, res, _next) => {
     const adopcionId = parseInt(req.params.adopcionId)
     const mascotaID = parseInt(req.params.mascotaId)
-    knex('mascotas_adoptadas')
+    knex('mascotas_acogidas_adoptadas')
       .where('id', adopcionId)
       .del()
       .then(function (response) {
         return knex('mascotas').where('id', mascotaID).update('id_estado', '3')
       }).catch(err => { console.log(err) })
-    res.send('Adopción Eliminada')
+    res.send('Acogida Eliminada')
   })
 
   // Añadir adopcion
   app.post('/insertarAdopcion', (req, res, _next) => {
     const { adopcion } = req.body
-    knex('mascotas_adoptadas').insert(
-      [
-        {
-          id_usuario: adopcion.id_usuario,
-          id_mascota: adopcion.id_mascota
-        }
-      ]
-    ).then(function (response) {
-      return knex('mascotas').where('id', adopcion.id_mascota).update('id_estado', '1')
-    }).catch(err => { console.log(err) })
-    res.send('¡La adopción se ha registrado correctamente!')
+    knex('mascotas_acogidas_adoptadas')
+      .where('id_mascota', adopcion.id_mascota)
+      .del().then(response => {
+        knex('mascotas_acogidas_adoptadas').insert(
+          [
+            {
+              id_usuario: adopcion.id_usuario,
+              id_mascota: adopcion.id_mascota,
+              estado: 1
+            }
+          ]
+        ).then(function (response) {
+          return knex('mascotas').where('id', adopcion.id_mascota).update('id_estado', '1')
+        }).catch(err => { console.log(err) })
+        res.send('¡La acogida se ha registrado correctamente!')
+      })
   })
 
   // ACOGIDAS
 
   // Listar Acogidas
-  app.get('/acogidas', (_req, res, _next) => knex('mascotas_acogidas')
-    .join('mascotas', 'mascotas_acogidas.id_mascota', '=', 'mascotas.id')
-    .join('usuarios', 'mascotas_acogidas.id_usuario', '=', 'usuarios.id_usuario')
+  app.get('/acogidas', (_req, res, _next) => knex('mascotas_acogidas_adoptadas')
+    .join('mascotas', 'mascotas_acogidas_adoptadas.id_mascota', '=', 'mascotas.id')
+    .join('usuarios', 'mascotas_acogidas_adoptadas.id_usuario', '=', 'usuarios.id_usuario')
     .join('provincias', 'usuarios.id_provincia', '=', 'provincias.id_provincia')
-    .select('mascotas_acogidas.*', 'mascotas.*', 'usuarios.*', 'provincias.provincia')
+    .select('mascotas_acogidas_adoptadas.*', 'mascotas.*', 'usuarios.*', 'provincias.provincia')
+    .where('mascotas_acogidas_adoptadas.estado', '=', 2)
     .options({nestTables: true})
     .then(
       data => res.send(data)
@@ -369,7 +373,7 @@ const apicontroller = app => {
   app.delete('/deleteAcogida/:acogidaId/:mascotaId', (req, res, _next) => {
     const acogidaId = parseInt(req.params.acogidaId)
     const mascotaID = parseInt(req.params.mascotaId)
-    knex('mascotas_acogidas')
+    knex('mascotas_acogidas_adoptadas')
       .where('id', acogidaId)
       .del()
       .then(function (response) {
@@ -378,26 +382,32 @@ const apicontroller = app => {
     res.send('Acogida Eliminada')
   })
 
-  // Añadir adopcion
+  // Añadir acogida
   app.post('/insertarAcogida', (req, res, _next) => {
     const { acogida } = req.body
-    knex('mascotas_acogidas').insert(
-      [
-        {
-          id_usuario: acogida.id_usuario,
-          id_mascota: acogida.id_mascota
-        }
-      ]
-    ).then(function (response) {
-      return knex('mascotas').where('id', acogida.id_mascota).update('id_estado', '2')
-    }).catch(err => { console.log(err) })
-    res.send('¡La acogida se ha registrado correctamente!')
+    knex('mascotas_acogidas_adoptadas')
+      .where('id_mascota', acogida.id_mascota)
+      .del().then(response => {
+        knex('mascotas_acogidas_adoptadas').insert(
+          [
+            {
+              id_usuario: acogida.id_usuario,
+              id_mascota: acogida.id_mascota,
+              estado: 2
+            }
+          ]
+        )
+          .then(function (response) {
+            return knex('mascotas').where('id', acogida.id_mascota).update('id_estado', '2')
+          }).catch(err => { console.log(err) })
+        res.send('¡La acogida se ha registrado correctamente!')
+      })
   })
 
   // OTHERS
 
   // Matching mascota / usuarios
-  const subquery = knex('mascotas_adoptadas').select('id_mascota')
+  const subquery = knex('mascotas_acogidas_adoptadas').select('id_mascota')
   app.get('/matchs', (_req, res, _next) => knex('caracteristicas').where('mascotas.id', 'not in', subquery).groupBy('mascotas.id')
     .join('caracteristicas_mascota', 'caracteristicas.id', '=', 'caracteristicas_mascota.id_caracteristica')
     .join('preferencias', 'caracteristicas.id', '=', 'preferencias.id_caracteristica')

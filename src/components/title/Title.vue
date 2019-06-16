@@ -1,5 +1,5 @@
 <template lang="pug">
-  .container
+  .contenedor
     .special-title-box(v-if="!subtitle")
       .special-title-section
         b-icon.title-icon(v-if="icon" :icon="icon")
@@ -67,7 +67,7 @@
   .special-subtitle-box
     display: flex
     align-items: center
-    justify-content: space-between
+    justify-content: left
     flex-wrap: wrap
     margin: 10px 0px
     padding: 10px 10px 0px 10px

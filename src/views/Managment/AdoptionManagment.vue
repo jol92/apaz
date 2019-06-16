@@ -4,19 +4,16 @@
     custom-title(v-else-if="accion == 'Acogida'" title=`Administrar Acogidas`)
     .div-botton
       b-button.icon-button(type='is-info', icon-left='paw', size="is-medium" @click="handleAdd(accion)") Añadir {{accion}}
-    b-table(empty striped narrowed hoverable mobile-cards :data='getDataList()', :paginated='isPaginated', :per-page='perPage', :current-page.sync='currentPage', :pagination-simple='isPaginationSimple', :default-sort-direction='defaultSortDirection', default-sort='id' aria-next-label='Next page', aria-previous-label='Previous page', aria-page-label='Page', aria-current-label='Current page' style="width: 100%")
+    b-table(empty striped narrowed hoverable mobile-cards :data='mascotasList', :paginated='isPaginated', :per-page='perPage', :current-page.sync='currentPage', :pagination-simple='isPaginationSimple', :default-sort-direction='defaultSortDirection', default-sort='id' aria-next-label='Next page', aria-previous-label='Previous page', aria-page-label='Page', aria-current-label='Current page' style="width: 100%")
       template(slot-scope='props')
-        b-table-column(field='id', label='#', sortable v-if="accion === 'Adopcion'")
-          | {{ props.row.mascotas_adoptadas.id }}
-        b-table-column(field='id', label='#', sortable v-else-if="accion == 'Acogida'")
-          | {{ props.row.mascotas_acogidas.id }}
+        b-table-column(field='id', label='#', sortable)
+          | {{ props.row.mascotas_acogidas_adoptadas.id }}
         b-table-column(field='mascota', label='Mascota', sortable)
           | {{ props.row.mascotas.nombre }}
-        b-table-column(field='usuario', label='Adoptante', sortable)
+        b-table-column(field='usuario', label='Usuario', sortable)
           | {{ props.row.usuarios.nombre + ' ' + props.row.usuarios.apellidos  }}
-        b-table-column(field='fechaAdopcion', label='Fecha de Adopcicón', sortable, centered)
-          span.tag.is-success(v-if="accion=='Adopcion'") {{ moment(props.row.mascotas_adoptadas.fecha_adopcion).format('DD / MM / YYYY') }}
-          span.tag.is-success(v-else-if="accion == 'Acogida'") {{ moment(props.row.mascotas_acogidas.fecha_acogida).format('DD / MM / YYYY') }}
+        b-table-column(field='fechaAdopcion', :label="'Fecha de ' + accion", sortable, centered)
+          span.tag.is-success {{ moment(props.row.mascotas_acogidas_adoptadas.fecha_adopcion).format('DD / MM / YYYY') }}
         b-table-column(field='chip', label='Chip', sortable, centered)
           span(v-if="props.row.mascotas.chip === null") Sin chip 
           span(v-else) {{ props.row.mascotas.chip }}
@@ -27,8 +24,7 @@
         b-table-column(field="operaciones", label="Operaciones" centered)
           .icons-box
             b-button.icon-button(type="is-primary", icon-left='info-circle', size="is-medium" @click="handleInfo(props.row.usuarios)")
-            b-button.icon-button(type='is-danger', icon-left='trash', size="is-medium" @click="handleDelete(props.row.mascotas_adoptadas.id, props.row.mascotas_adoptadas.id_mascota)" v-if="accion === 'Adopcion'")
-            b-button.icon-button(type='is-danger', icon-left='trash', size="is-medium" @click="handleDelete(props.row.mascotas_acogidas.id, props.row.mascotas_acogidas.id_mascota)" v-else-if="accion === 'Acogida'")
+            b-button.icon-button(type='is-danger', icon-left='trash', size="is-medium" @click="handleDelete(props.row.mascotas_acogidas_adoptadas.id, props.row.mascotas_acogidas_adoptadas.id_mascota)")
 </template>
 
 <script>
@@ -43,7 +39,7 @@ export default {
   components: {
     'custom-title': Title
   },
-  created () {
+  mounted () {
     this.fetchData()
   },
   data() {
@@ -54,8 +50,7 @@ export default {
       defaultSortDirection: 'asc',
       currentPage: 1,
       perPage: 10,
-      dataList1: [],
-      dataList2: [],
+      mascotasList: [],
       matchsList: [],
       usuariosMatch: [],
     }
@@ -87,14 +82,16 @@ export default {
     },
     getAdoptions() {
       axios.get('http://localhost:3000/apaz/v1/adopciones').then(response =>{
-        this.dataList1 = response.data
+        this.mascotasList = response.data
+        console.log(this.mascotasList)
       }).catch(error =>{
         console.log(error)
       })
     },
     getAcogidas() {
       axios.get('http://localhost:3000/apaz/v1/acogidas').then(response =>{
-        this.dataList2 = response.data
+        this.mascotasList = response.data
+        console.log(this.mascotasList)
       }).catch(error =>{
         console.log(error)
       })
@@ -105,11 +102,6 @@ export default {
       }).catch(error =>{
         console.log(error)
       })
-    },
-    getDataList(){
-      let lista = []
-      this.accion === 'Acogida' ? lista = this.dataList2 : lista = this.dataList1
-      return lista
     },
     deleteAdopcion(id, id_mascota){
       axios.delete(`http://localhost:3000/apaz/v1/deleteAdopcion/${id}/${id_mascota}`)
