@@ -7,8 +7,7 @@
         img.imagen(:src="ruta + mascota.imagen")
       .nada-side
       .info-side
-        .info-title Información  
-          b-icon(pack="fas", icon='info-circle')
+        custom-title(title="Información" subtitle)
         .info
           b-icon(pack="fas", icon='heart')
           .titulo Nombre:
@@ -32,26 +31,37 @@
           b-icon(pack='fas', :icon="mascota.tipo === 'Perro' ? 'dog' : mascota.tipo === 'Gato' ? 'cat' : 'paw'")
           .titulo Tipo:
           .value {{ mascota.tipo }}
+        .info
+          b-taglist
+            b-tag(type="is-info" v-for="caracteristica in mascota.caracteristicas" :key="caracteristica.id") {{ caracteristica }}
       .nada-side
     .descripcion
       custom-title(title="Descripción")
       div(v-html="mascota.descripcion")
     .interest
       custom-title(:title="`¿Quieres ayudar a ${mascota.nombre}?`")
-      .donation-box
-        .info
-          .titulo Únete a nuestro teaming:
-          .value 
-            a https://www.teaming.net/apaz?lang=es_ES
-        .info
-          .titulo Haz tu donativo:
-        p BBK CAJASUR - BIC: CSURES2CXXX - IBAN: ES09 0237 0197 1091 5619 7772 
-        p BANKIA - BIC: CAHMESMMXXX . IBAN: ES11 2038 5859 2160 0059 0703
+      section
+        b-tabs(type='is-boxed' size="is-medium")
+          b-tab-item(label='Donar', icon='donate')
+            .info
+              .titulo Únete a nuestro teaming:
+              .value 
+                a https://www.teaming.net/apaz?lang=es_ES
+            .info
+              .titulo Haz tu donativo:
+            p BBK CAJASUR - BIC: CSURES2CXXX - IBAN: ES09 0237 0197 1091 5619 7772 
+            p BANKIA - BIC: CAHMESMMXXX . IBAN: ES11 2038 5859 2160 0059 0703
 
-
-      .button-box
-        b-button.icon-button(type='is-info', icon-left='paw', size="is-medium" @click="handleAdd(accion)") Quiero acoger a {{ mascota.nombre }}
-        b-button.icon-button(type='is-info', icon-left='paw', size="is-medium" @click="handleAdd(accion)") Quiero adoptar a {{ mascota.nombre }}
+          b-tab-item(label='Acoger', icon='home')
+            .info
+              b-message(title='¿Estás interesado/a en acoger?', type='is-info', has-icon='', aria-close-label='Close message') Ten en cuenta los animales precisan de unas necesidades mínimas: alimentación, dedicación, veterinario... Si crees que no puedes dárselo por falta de tiempo o recursos, por favor, no contactes.
+            .button-box
+              b-tooltip(label="Por favor, tenga en cuenta que pulsando este botón nos pondremos en contacto con usted para tramitar una posible acogida", position='is-bottom', size='is-large', multilined='')
+                b-button.icon-button(type='is-info', icon-left='paw', size="is-medium" @click="handleAcoger") Quiero acoger a {{ mascota.nombre }}
+          b-tab-item(label='Adoptar', icon='heart')
+            .button-box
+              b-tooltip(label="Por favor, tenga en cuenta que pulsando este botón nos pondremos en contacto con usted para tramitar una posible adopción", position='is-bottom', size='is-large', multilined='')
+                b-button.icon-button(type='is-info', icon-left='paw', size="is-medium" @click="handleAdoptar") Quiero adoptar a {{ mascota.nombre }}
 </template>
 
 <script>
@@ -87,14 +97,15 @@
           caracteristicas: [],
           fecha_nacimiento: null,
           descripcion: null
-        }
+        },
+        usuario: null
       }
     },
     methods: {
       fetchData() {
         this.getMascota()
         this.getCaracteristicaMascota()
-        console.log(this.mascota)
+        this.usuario = JSON.parse(localStorage.getItem('logedUser'))
       },
       getMascota() {
         axios.get(`http://localhost:3000/apaz/v1/mascotas/${this.id}`).then(response =>{
@@ -118,6 +129,34 @@
         }).catch(error =>{
           console.log(error)
         })
+      },
+      handleAdoptar() {
+        axios.post('http://localhost:3000/apaz/v1/mailInteresado', {
+          usuario: this.usuario,
+          mascota: this.mascota,
+          accion: 'adoptar'
+        })
+        this.$snackbar.open({
+          message: `Nos pondremos en contacto con usted para tramitar la posible adopción de ${this.mascota.nombre}. ¡Muchas gracias!`,
+          type: 'is-warning',
+          position: 'is-top',
+          actionText: 'Continuar',
+          duration: 5000
+        })
+      },
+      handleAcoger() {
+        axios.post('http://localhost:3000/apaz/v1/mailInteresado', {
+          usuario: this.usuario,
+          mascota: this.mascota,
+          accion: 'acoger'
+        })
+        this.$snackbar.open({
+          message: `Nos pondremos en contacto con usted para tramitar la posible acogida de ${this.mascota.nombre}. ¡Muchas gracias!`,
+          type: 'is-warning',
+          position: 'is-top',
+          actionText: 'Continuar',
+          duration: 5000
+        })
       }
     }
   }
@@ -139,7 +178,7 @@
       flex: 1
       max-width: 100px
     .info-side
-      flex: 1
+      flex: 2
       min-width: 210px
       text-align: left
       .icon

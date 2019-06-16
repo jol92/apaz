@@ -1,6 +1,7 @@
 import knex from '../infraestructure/knex'
 import bcrypt from 'bcrypt'
 import upload from '../infraestructure/multer'
+import nodemailer from 'nodemailer'
 
 const apicontroller = app => {
   app.use(function (req, res, next) {
@@ -10,6 +11,33 @@ const apicontroller = app => {
     next()
   })
 
+  // MAIL
+  // Petición adopción
+  app.post('/mailInteresado', function (req, res, next) {
+    const usuario = req.body.usuario
+    const mascota = req.body.mascota
+    const accion = req.body.accion
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'informacion.apaz@gmail.com',
+        pass: '123Apaz.'
+      }
+    })
+    const mailOptions = {
+      from: `${req.body.email}`,
+      to: 'protectora.zeus@gmail.com', // mail receiver
+      subject: `¡Un usuario se ha interesado por ${mascota.nombre}!`, // subject
+      html: `<p>El usuario <b>${usuario.nombre} ${usuario.apellidos}</b> se ha interesado en <b>${accion}</b> a <b>${mascota.nombre}</b></p><p><b> - Información del usuario - </b></p><p><b>Teléfono: </b>${usuario.telefono}</p><p><b>E-mail: </b>${usuario.email}</p>` // plain text body
+    }
+    transporter.sendMail(mailOptions, function (err, res) {
+      if (err) {
+        console.error('there was an error: ', err)
+      } else {
+        console.log('here is the res: ', res)
+      }
+    })
+  })
   // USUARIOS
 
   // Listar Usuarios
@@ -202,6 +230,42 @@ const apicontroller = app => {
     .options({nestTables: true})
     .then(data => res.send(data))
   )
+
+  // Listar mascotas con filtros
+  app.post('/filteredMascotas', (req, res, next) => {
+    const filtrosMascota = req.body.filtros
+    let query = knex('mascotas')
+      .join('estados_mascota', 'mascotas.id_estado', '=', 'estados_mascota.id')
+      .join('tipos_mascota', 'mascotas.id_tipo', '=', 'tipos_mascota.id')
+      .join('caracteristicas_mascota', 'mascotas.id', '=', 'caracteristicas_mascota.id_mascota')
+      .select('mascotas.*', 'estados_mascota.nombre_estado', 'tipos_mascota.nombre')
+    if (filtrosMascota.buscador != null && filtrosMascota.buscador !== '' && filtrosMascota.buscador !== ' ') {
+      query.where('mascotas.nombre', 'like', `%${filtrosMascota.buscador}%`).orWhere('mascotas.raza', 'like', `%${filtrosMascota.buscador}%`)
+    }
+    if (filtrosMascota.tipo != null && filtrosMascota.tipo !== '' && filtrosMascota.tipo !== ' ' && filtrosMascota.tipo !== '0') {
+      query.where('mascotas.id_tipo', '=', filtrosMascota.tipo)
+    }
+    if (filtrosMascota.sexo != null && filtrosMascota.sexo !== '' && filtrosMascota.sexo !== ' ' && filtrosMascota.sexo !== '2') {
+      query.where('mascotas.genero', '=', filtrosMascota.sexo)
+    }
+    if (filtrosMascota.edad != null && filtrosMascota.edad !== '' && filtrosMascota.edad !== ' ') {
+      query.orderBy('mascotas.fecha_nacimiento', filtrosMascota.edad)
+    }
+    if (filtrosMascota.caracteristicas.length >= 1) {
+      if (filtrosMascota.caracteristicas.length === 1) {
+        query.where('caracteristicas_mascota.id_caracteristica', '=', filtrosMascota.caracteristicas[0].id)
+      } else {
+        query.where('caracteristicas_mascota.id_caracteristica', '=', filtrosMascota.caracteristicas[0].id)
+        filtrosMascota.caracteristicas.forEach(caracteristica => {
+          query.orWhere('caracteristicas_mascota.id_caracteristica', '=', caracteristica.id)
+        })
+      }
+    }
+    query.where('mascotas.id_estado', '!=', 1)
+    query.groupBy('mascotas.id')
+    query.options({nestTables: true})
+    query.then(data => res.send(data))
+  })
 
   // Eliminar mascota
   app.delete('/deletePet/:petId', (req, res, _next) => {

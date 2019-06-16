@@ -34,6 +34,8 @@ import {
   faCaretDown,
   faCaretUp,
   faUserEdit,
+  faUser,
+  faUserShield,
   faExclamationCircle,
   faCalendarDay,
   faMars,
@@ -46,7 +48,11 @@ import {
   faBirthdayCake,
   faBone,
   faDog,
-  faCat
+  faCat,
+  faDonate,
+  faHome,
+  faEyeSlash,
+  faSearch
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
@@ -61,9 +67,12 @@ library.add(
   faAngleDown,
   faAngleLeft,
   faEye,
+  faEyeSlash,
   faCaretDown,
   faCaretUp,
   faUserEdit,
+  faUser,
+  faUserShield,
   faExclamationCircle,
   faCalendarDay,
   faMars,
@@ -76,7 +85,10 @@ library.add(
   faBirthdayCake,
   faBone,
   faDog,
-  faCat
+  faCat,
+  faDonate,
+  faHome,
+  faSearch
 )
 Vue.component('vue-fontawesome', FontAwesomeIcon)
 

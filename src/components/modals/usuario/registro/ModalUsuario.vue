@@ -45,12 +45,12 @@
                 b-button.custom_tags(rounded size="is-small" type="is-info" v-for="caracteristica in caracteristicasList" :key="caracteristica.id" @click.prevent="asignarPreferencia(caracteristica)") {{ caracteristica.nombre_caracteristica }}
 
           b-field(label='Contraseña', :type="{'is-danger': errors.has('password')}", :message="errors.first('password')")
-            b-input(type='password', v-model='user.password', name='password', v-validate="'required|min:8'", data-vv-as="contraseña")
+            b-input(type='password', password-reveal v-model='user.password', name='password', v-validate="'required|min:8'", data-vv-as="contraseña")
 
           b-field(label='Confirmar Contraseña', :type="{'is-danger': errors.has('confirm-password')}", 
           :message="[{\'El campo confirmar contraseña es obligatorio' : errors.firstByRule('confirm-password', 'required'),\'¡Las contraseñas son distintas!' : errors.firstByRule('confirm-password', 'is')\
           }]")
-            b-input(type='password', v-model='confirmPassword', name='confirm-password', v-validate='{ required: true, is: user.password }')
+            b-input(type='password', v-model='confirmPassword', password-reveal name='confirm-password', v-validate='{ required: true, is: user.password }')
 
           b-field(label='', :type="{'is-danger': errors.has('flag-terms')}", :message="{'Por favor marque la casilla para continuar' : errors.firstByRule('flag-terms', 'required')}")
             b-checkbox(v-model='flagTerms', name='flag-terms', v-validate="'required:false'")

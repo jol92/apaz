@@ -1,8 +1,12 @@
 <script>
 import ModalUsuarioVue from '@/components/modals/usuario/registro'
 import ModalLogin from '@/components/modals/usuario/login'
+import Title from '@/components/title'
 export default {
   name: 'NavBar',
+  components: {
+    'custom-title': Title
+  },
   data() {
     return {
       scrollPosition: null,
@@ -49,13 +53,21 @@ export default {
     logout(){
       localStorage.removeItem('logedUser')
       this.$router.go()
-    }
+    },
+    handleEdit(user) {
+      this.$modal.open({
+        parent: this,
+        component: ModalUsuarioVue,
+        hasModalCard: true,
+        props: { user_edit: user }
+      })
+    },
   }
 }
 </script>
 
 <template lang="pug">
-  header
+  .header
     nav.navbar(role='navigation', aria-label='main navigation')
       .navbar-brand
         router-link.navbar-item.logo(to="/home")
@@ -65,11 +77,11 @@ export default {
           span(aria-hidden='true')
       #nav-menu.navbar-menu
         .navbar-start
-          router-link.navbar-item(to="/home")
-            | Mascotas en Adopción
-          router-link.navbar-item(to="")
+          router-link.navbar-item(to="/pet-list")
+            | Nuestras mascotas
+          router-link.navbar-item(to="help")
             | Ayúdanos
-          router-link.navbar-item(to="")
+          router-link.navbar-item(to="/help")
             | Sobre nosotros
           .navbar-item.has-dropdown.is-hoverable(v-if="this.userLoged.id_tipo_usuario === 1")
             a.navbar-link
@@ -89,22 +101,23 @@ export default {
         .navbar-end
           .navbar-item
             .buttons
-              a.button.is-primary(@click="userModal()")
-                strong Ayúdanos 
+              a.button.is-primary(@click="userModal()" v-if="this.userLoged.loged === false")
+                strong Regístrate 
+              b-button(v-else @click="handleEdit(userLoged)" :icon-left="this.userLoged.id_tipo_usuario === 1 ? 'user-shield' : 'user'") 
+                strong Hola, {{ this.userLoged.nombre }}
               a.button.is-link(@click="loginModal()" v-if="this.userLoged.loged == false")
                 strong Entrar
               a.button.is-danger(@click="logout()" v-else) 
                 strong Salir
+
+    section.hero.is-medium.is-primary.has-background
+      img.hero-background.is-transparent(src="https://cdn.pixabay.com/photo/2016/01/19/17/41/friends-1149841_960_720.jpg" alt="Fill Murray")
+      .hero-body
+        .inside
+          h1.title ASOCIACIÓN PROTECTORA DE ANIMALES ZEUS
 </template>
 
 <style lang="sass" scoped>
-header
-  width: 100%
-  background: url(header.jpg) no-repeat 50% 40%
-  background-position: 25% 25%
-  background-size: cover
-  height: 450px
-  min-height: 240px
   nav
     position: fixed
     width: 100%
@@ -112,4 +125,18 @@ header
     background: url(logo.png)
     width: 200px
     height: 60px
+  .hero
+    &.has-background
+      position: relative
+      overflow: hidden
+    &-background
+      position: absolute
+      object-fit: cover
+      object-position: center center
+      width: 100%
+      height: 100%
+      &.is-transparent
+        opacity: 0.6
+    .title
+      text-align: center
 </style>

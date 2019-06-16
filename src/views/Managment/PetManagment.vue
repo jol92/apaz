@@ -19,6 +19,12 @@
             | {{ moment(props.row.fecha_registro).format('DD / MM / YYYY') }}
         b-table-column(field='genero', label='Género', sortable, centered)
           b-icon(pack='fas', :icon="props.row.mascotas.genero === 0 ? 'mars' : 'venus'")
+        b-table-column(field="chip", label="Chip", sortable)
+          div(v-if="props.row.mascotas.chip != null && props.row.mascotas.chip != ''") {{ props.row.mascotas.chip }}
+          div(v-else) Sin chip
+        b-table-column(field="raza", label="Raza", sortable)
+          div(v-if="props.row.mascotas.raza != null && props.row.mascotas.raza != ''") {{ props.row.mascotas.raza }}
+          div(v-else) Desconocida
         b-table-column(field="operaciones", label="Operaciones" centered)
           .icons-box
             b-button.icon-button(type='is-danger', icon-left='trash', size="is-medium" @click="handleDelete(props.row.id)")
