@@ -15,4 +15,4 @@ npm run dev
 apaz_app/backend/sql/apaz.sql
 
 # Enter as admin
-user: admin@admin.com password: password
+user: admin@admin.com password: administrador
