@@ -1,11 +1,11 @@
 <script>
-import ModalUsuarioVue from '@/components/modals/usuario/registro'
-import ModalLogin from '@/components/modals/usuario/login'
-import Title from '@/components/title'
+import ModalUsuarioVue from "@/components/modals/usuario/registro";
+import ModalLogin from "@/components/modals/usuario/login";
+import Title from "@/components/title";
 export default {
-  name: 'NavBar',
+  name: "NavBar",
   components: {
-    'custom-title': Title
+    "custom-title": Title
   },
   data() {
     return {
@@ -17,42 +17,39 @@ export default {
     };
   },
   mounted() {
-    if(localStorage.getItem('logedUser')) {
-      this.userLoged.loged = true
-      this.userLoged = JSON.parse(localStorage.getItem('logedUser'))
+    if (localStorage.getItem("logedUser")) {
+      this.userLoged.loged = true;
+      this.userLoged = JSON.parse(localStorage.getItem("logedUser"));
     }
-    window.addEventListener('scroll', this.updateScroll);
+    window.addEventListener("scroll", this.updateScroll);
   },
   methods: {
     updateScroll() {
-      this.scrollPosition = window.scrollY
+      this.scrollPosition = window.scrollY;
     },
-    toggleNav() {
-          var nav = document.getElementById("nav-menu");
-          var className = nav.getAttribute("class");
-          if(className == "nav-right nav-menu") {
-              nav.className = "is-active";
-          } else {
-              nav.className = "";
-          }
+    toggleMenu() {
+      const { navMenu } = this.$refs;
+      navMenu.classList.contains("is-active")
+        ? navMenu.classList.remove("is-active")
+        : navMenu.classList.add("is-active");
     },
     userModal() {
       this.$modal.open({
         parent: this,
         component: ModalUsuarioVue,
-        hasModalCard: true,
-      })
+        hasModalCard: true
+      });
     },
     loginModal() {
       this.$modal.open({
         parent: this,
         component: ModalLogin,
-        hasModalCard: true,
-      })
+        hasModalCard: true
+      });
     },
-    logout(){
-      localStorage.removeItem('logedUser')
-      this.$router.go()
+    logout() {
+      localStorage.removeItem("logedUser");
+      this.$router.go();
     },
     handleEdit(user) {
       this.$modal.open({
@@ -60,10 +57,10 @@ export default {
         component: ModalUsuarioVue,
         hasModalCard: true,
         props: { user_edit: user }
-      })
-    },
+      });
+    }
   }
-}
+};
 </script>
 
 <template lang="pug">
@@ -71,11 +68,11 @@ export default {
     nav.navbar(role='navigation', aria-label='main navigation')
       .navbar-brand
         router-link.navbar-item.logo(to="/home")
-        a.navbar-burger.burger(role='button', aria-label='menu', aria-expanded='false', data-target='nav-menu' @click="toggleNav")
+        a.navbar-burger.burger(role='button', aria-label='menu', aria-expanded='false', data-target='nav-menu', @click="toggleMenu")
           span(aria-hidden='true')
           span(aria-hidden='true')
           span(aria-hidden='true')
-      #nav-menu.navbar-menu
+      #nav-menu.navbar-menu(ref='navMenu')
         .navbar-start
           router-link.navbar-item(to="/pet-list")
             | Nuestras mascotas
