@@ -43,25 +43,49 @@
       section
         b-tabs(type='is-boxed' size="is-medium")
           b-tab-item(label='Donar', icon='donate')
-            .info
-              .titulo Únete a nuestro teaming:
-              .value 
-                a https://www.teaming.net/apaz?lang=es_ES
-            .info
-              .titulo Haz tu donativo:
-            p BBK CAJASUR - BIC: CSURES2CXXX - IBAN: ES09 0237 0197 1091 5619 7772 
-            p BANKIA - BIC: CAHMESMMXXX . IBAN: ES11 2038 5859 2160 0059 0703
-
+            .info-box
+              p.strong Únete a nuestro teaming:
+              img(src="https://djg5cfn4h6wcu.cloudfront.net/resources/images/coLogos/teaming-alpha.png")
+            .info-box
+              p.strong Si quieres colaborar económicamente y no puedes comprometerte mensualmente puedes ayudarnos haciendo un donativo.
+              ul
+                li A través de 
+                  a Paypal
+                  |  haciendo click en el enlace o imagen:
+                li A través de la siguiente cuenta bancaria:
           b-tab-item(label='Acoger', icon='home')
-            .info
+            .info-box
               b-message(title='¿Estás interesado/a en acoger?', type='is-info', has-icon='', aria-close-label='Close message') Ten en cuenta los animales precisan de unas necesidades mínimas: alimentación, dedicación, veterinario... Si crees que no puedes dárselo por falta de tiempo o recursos, por favor, no contactes.
+              custom-title(subtitle title="Ser casa de acogida de un animal es una opción muy necesaria e importante para poder salvarlos.")
+              p.strong ¿Que tienes que hacer como casa de acogida y que necesitas?
+              ol
+                li Dar amor y cariño a un animal que te necesita.
+                li Ayudarlo en el tiempo de su recuperación para que recobre su confianza en los humanos.
+                li Rehabiltar, medicar en su caso o simplemente jugar con él.
+                li Llevarlo a revisiones veterinarias, en caso necesario (Corren a cargo de la asociación, salvo que quieras apadrinarlo)
+                li Tener paciencia y ganas de ayudar a un ser que te necesita.
+              p.strong Ventajas para el perro que está en acogida:
+              ol
+                li Se siente seguro bajo un techo y con una familia
+                li Su recuperación es mas rápida y placentera.
+                li Aprende a perder sus miedos a los humanos.
+                li Está a salvo, alimentado, cuidado y recibiendo el cariño que necesita.
+                li Salva su vida gracias a tu ayuda.
+              p.strong Ventajas para tí:
+              ol
+                li Disfrutas de su compañía como la de un amigo.
+                li Te sientes útil ayudando a un animal que te necesita.
+                li Te ayuda a tomar la decisión de adoptar a un perro si aún no tienes, porque cuentas con la ayuda y el asesoramiento de la asociación, si tienes dudas que puedes resolver durante ese tiempo
+                li Satisfacción por salvar una vida.
             .button-box
               b-tooltip(label="Por favor, tenga en cuenta que pulsando este botón nos pondremos en contacto con usted para tramitar una posible acogida", position='is-bottom', size='is-large', multilined='')
-                b-button.icon-button(type='is-info', icon-left='paw', size="is-medium" @click="handleAcoger") Quiero acoger a {{ mascota.nombre }}
+                b-button.icon-button(type='is-info', icon-left='home', size="is-medium" @click="handleAcoger") Quiero acoger a {{ mascota.nombre }}
           b-tab-item(label='Adoptar', icon='heart')
+            .info-box
+              b-message(title='¿Estás interesado/a en acoger?', type='is-info', has-icon='', aria-close-label='Close message') Ten en cuenta los animales precisan de unas necesidades mínimas: alimentación, dedicación, veterinario... Si crees que no puedes dárselo por falta de tiempo o recursos, por favor, no contactes.
             .button-box
               b-tooltip(label="Por favor, tenga en cuenta que pulsando este botón nos pondremos en contacto con usted para tramitar una posible adopción", position='is-bottom', size='is-large', multilined='')
-                b-button.icon-button(type='is-info', icon-left='paw', size="is-medium" @click="handleAdoptar") Quiero adoptar a {{ mascota.nombre }}
+                b-button.icon-button(type='is-info', icon-left='heart', size="is-medium" @click="handleAdoptar") Quiero adoptar a {{ mascota.nombre }}
 </template>
 
 <script>
@@ -163,6 +187,8 @@
 </script>
 
 <style lang="sass" scoped>
+  .strong
+    font-weight: 600
   .pet-layout
     display: flex
     width: 100%
@@ -192,6 +218,7 @@
     display: flex
     margin-left: 10px
     margin-top: 20px
+    flex-wrap: wrap
     .value
       margin-left: 10px
     .titulo

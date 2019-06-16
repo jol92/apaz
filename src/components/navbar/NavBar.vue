@@ -75,14 +75,14 @@ export default {
       #nav-menu.navbar-menu(ref='navMenu')
         .navbar-start
           router-link.navbar-item(to="/pet-list")
-            | Nuestras mascotas
+            strong Nuestras mascotas
           router-link.navbar-item(to="help")
-            | Ayúdanos
-          router-link.navbar-item(to="/help")
-            | Sobre nosotros
+            strong Ayúdanos
+          router-link.navbar-item(to="/about-us")
+            strong Sobre nosotros
           .navbar-item.has-dropdown.is-hoverable(v-if="this.userLoged.id_tipo_usuario === 1")
             a.navbar-link
-              | Administración
+              strong Administración
             .navbar-dropdown
               router-link.navbar-item(to="/user-management")
                 | Administrar Usuarios

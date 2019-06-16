@@ -15,6 +15,8 @@
           | {{ props.row.telefono }}
         b-table-column(field='direccion', label='Direccion', sortable)
           | {{ props.row.direccion + ' ' + props.row.direccion2 + ', ' + props.row.provincia }}
+        b-table-column(field='vivienda', label='Vivienda', sortable)
+          | {{ props.row.nombre_vivienda }}
         b-table-column(field='date', label='Fecha de Nacimiento', sortable, centered)
           span.tag.is-success
             | {{ moment.unix(props.row.fecha_nacimiento).format('DD / MM / YYYY') }}

@@ -10,6 +10,7 @@ import AdoptionManagment from '../views/Managment/AdoptionManagment'
 import PetProfile from '../views/PetProfile'
 import Help from '../views/Help'
 import PetList from '../views/PetList'
+import AboutUs from '../views/AboutUs'
 
 Vue.use(Router)
 
@@ -57,6 +58,10 @@ let router = new Router({
     {
       path: '/pet-list',
       component: PetList
+    },
+    {
+      path: '/about-us',
+      component: AboutUs
     }
   ]
 })
