@@ -3,7 +3,7 @@
     custom-title(title=`Administrar Adopciones` v-if="accion === 'Adopcion'")
     custom-title(v-else-if="accion == 'Acogida'" title=`Administrar Acogidas`)
     .div-botton
-      b-button.icon-button(type='is-info', icon-left='paw', size="is-medium" @click="handleAdd(accion)") Añadir {{accion}}
+      b-button.icon-button(type='is-info', :icon-left="accion === 'Adopcion' ? 'heart' : 'home'", size="is-medium" @click="handleAdd(accion)") Añadir {{accion}}
     b-table(empty striped narrowed hoverable mobile-cards :data='mascotasList', :paginated='isPaginated', :per-page='perPage', :current-page.sync='currentPage', :pagination-simple='isPaginationSimple', :default-sort-direction='defaultSortDirection', default-sort='id' aria-next-label='Next page', aria-previous-label='Previous page', aria-page-label='Page', aria-current-label='Current page' style="width: 100%")
       template(slot-scope='props')
         b-table-column(field='id', label='#', sortable)
@@ -83,7 +83,6 @@ export default {
     getAdoptions() {
       axios.get('http://localhost:3000/apaz/v1/adopciones').then(response =>{
         this.mascotasList = response.data
-        console.log(this.mascotasList)
       }).catch(error =>{
         console.log(error)
       })
@@ -91,7 +90,6 @@ export default {
     getAcogidas() {
       axios.get('http://localhost:3000/apaz/v1/acogidas').then(response =>{
         this.mascotasList = response.data
-        console.log(this.mascotasList)
       }).catch(error =>{
         console.log(error)
       })
@@ -114,7 +112,6 @@ export default {
       })
     },
     deleteAcogida(id, id_mascota){
-      console.log(id_mascota)
       axios.delete(`http://localhost:3000/apaz/v1/deleteAcogida/${id}/${id_mascota}`)
       .then((response) => {
         this.$toast.open(response.data)

@@ -34,7 +34,7 @@
           b-button(type='is-success', icon-right='check' size="is-small" rounded @click="insertarCaracteristica(new_caracteristica)")
 
       b-field(label='Raza')
-        b-input(v-model='pet.raza', name='chip', placeholder='Introduzca la raza')
+        b-input(v-model='pet.raza', name='raza', placeholder='Introduzca la raza')
         
       b-field.genero(label="Género *" :type="{'is-danger': errors.has('genero')}", :message="errors.first('genero')")
         .boton-margin
@@ -61,6 +61,12 @@ import { VueEditor } from 'vue2-editor'
 
 export default {
   name: 'PetAdd',
+  props: {
+    pet_edit: {
+      type: Object,
+      default: null
+    }
+  },
   components: {
     'custom-title': Title,
     VueEditor
@@ -70,6 +76,7 @@ export default {
       action: 'Añadir',
       tiposList: [],
       pet: {
+        id: null,
         nombre: null,
         fecha_nacimiento: null,
         chip: null,
@@ -78,7 +85,8 @@ export default {
         caracteristicas: [],
         descripcion: '',
         imagen: null,
-        raza: null
+        raza: null,
+        id_tipo: null
       },
       fecha: null,
       caracteristicasList: [],
@@ -88,15 +96,22 @@ export default {
   },
   mounted() {
     this.fetchData()
+    if(this.pet_edit != null) {
+      this.pet.nombre = this.pet_edit.nombre
+      this.fecha = new Date(this.pet_edit.fecha_nacimiento*1000)
+      this.pet.chip = this.pet_edit.chip
+      this.pet.genero = this.pet_edit.genero
+      this.pet.descripcion = this.pet_edit.descripcion
+      this.pet.raza = this.pet_edit.raza
+      this.pet.id_tipo = this.pet_edit.id_tipo
+      this.pet.id = this.pet_edit.id
+      this.action = 'Update'
+    }
   },
   methods: {
     fetchData() {
       this.getCaracteristicas()
       this.getTipos()
-    },
-    getFiles(files){
-      console.log(this.pet.imagen)
-      console.log(files)
     },
     getTipos() {
       axios.get('http://localhost:3000/apaz/v1/tipos_mascota')
@@ -145,6 +160,7 @@ export default {
           this.pet.genero = parseInt(this.pet.genero)
           this.pet.chip = parseInt(this.pet.chip)
           this.postMascota()
+          this.$emit('refresh-pet-table')
           this.$router.push('pet-management')
         }else {
           this.$toast.open({
@@ -159,22 +175,38 @@ export default {
       const formData = new FormData()
       formData.append('file', this.pet.imagen)
       formData.append('mascota', JSON.stringify(this.pet))
-      axios({
-        method: 'POST',
-        url: 'http://localhost:3000/apaz/v1/insertarMascota',
-        data: formData,
-        config: { headers: {'Content-Type': 'multipart/form-data' }}
-      })
-      .then(response => {
-        this.$toast.open({
-          message: response.data,
-          type: 'is-info',
-          position: 'is-bottom'
+      if(this.action != 'Update') {
+        axios({
+          method: 'POST',
+          url: 'http://localhost:3000/apaz/v1/insertarMascota',
+          data: formData,
+          config: { headers: {'Content-Type': 'multipart/form-data' }}
         })
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+        .then(response => {
+          this.$toast.open({
+            message: response.data,
+            type: 'is-info',
+            position: 'is-bottom'
+          })
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
+      } else {
+        axios({
+          method: 'POST',
+          url: 'http://localhost:3000/apaz/v1/updateMascota',
+          data: formData,
+          config: { headers: {'Content-Type': 'multipart/form-data' }}
+        })
+        .then(response => {
+          this.$toast.open({
+            message: response.data,
+            type: 'is-info',
+            position: 'is-bottom'
+          })
+        })
+      }
     }
   },
 }

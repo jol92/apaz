@@ -7,14 +7,18 @@
         p.intro Si quieres colaborar económicamente y no puedes comprometerte mensualmente puedes ayudarnos haciendo un donativo.
         ul
           li A través de 
-            a Paypal
+            a(href="https://www.paypal.es" target="_blank") Paypal
             |  haciendo click en el enlace o imagen:
-          li A través de la siguiente cuenta bancaria: 
+          .imagen
+           a(href="https://www.paypal.es" target="_blank") 
+            img(src="https://www.nocreasnada.com/wp-content/uploads/2016/10/Boton-donar-paypal-300x166-.png" width="150")
+          li A través de la siguiente cuenta bancaria:
+            p(style="font-weight: 600") CAIXABANK	ES6621000418401234567891	1210	0418	40	1234567891
     .teaming
       custom-title(subtitle title="Teaming")
       .text
         p.intro También puedes ayudarnos por sólo un euro al mes a través de nuestro 
-          a(href='https://www.teaming.net/apaz?lang=es_ES') Teaming.
+          a(href='https://www.teaming.net/apaz?lang=es_ES' target="_blank") Teaming.
     .colaborador
       custom-title(subtitle title="Colaborador Permanente")
       .text
@@ -40,14 +44,8 @@
           a(href='mailto:protectora.zeus@gmail.com') contáctanos
           |  o pásate por uno de nuestros puntos de ayuda:
         ul
-          li Punto 1
-          li Punto 2
-    .difunde
-      custom-title(subtitle title="Teaming")
-      p texto teaming
-    .otros
-      custom-title(subtitle title="Teaming")
-      p texto teaming
+          li Calle, AV El escorial, 12, 14010 Córdoba
+          li Calle, Joaquín López Huici, 1, 14005 Córdoba
 </template>
 
 <script>
@@ -70,6 +68,11 @@ export default {
  .text
   padding: 15px
   font-weight: 400
+  a
+    color: #c78d8a
+    font-weight: 600
   .intro
     font-weight: 600 !important
+  .imagen
+    margin: 5px
 </style>

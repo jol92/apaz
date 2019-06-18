@@ -6,27 +6,44 @@ export default {
 
 <template lang="pug">
 footer.footer
-  .content
-    p Inicio
-    p Políticas de privacidad
-    p Términos y condiciones
-    p Panel de administración
-    p Reportar error
-  .content
-    .imagen-logo  
-      img(src="'../../static/img/logo.png")
+  .first-row
+    .contacto
+      .title Contáctanos
+      .title2(style="font-weight: bold") Teléfonos
+      .info 664881231
+      .info 663129012
+      .title2(style="font-weight: bold") E-mail
+      .info protectora.zeus@gmail.com
+    .ubicacion
+      .title Ubiccación
+      .info Calle AV El escorial nº 12 14010 Córdoba
+    .logo
+      .imagen-logo  
+        img(src="'../../static/img/logo.png")
+  .second-row
+    .copy Copyright &copy; 2019 Asociación Protectora Animales Zeus. Todos los derechos reservados. Creado por 
+      a(style="color: #c78d8a") jorgeojedalopez92@gmail.com
+    .ies(style="font-weight: bold") IES Trassierra
 </template>
 
 <style lang="sass" scoped>
   .footer
-    display: flex
-    padding-top: 10px
-    padding-bottom: 20px
-    background-color: #c78d8a
-    color: blue
-    .content
+    padding-bottom: 40px
+    .first-row
+      display: flex
+      flex-wrap: wrap
+      justify-content: space-around
+      .logo
+        flex: 1
+        max-width: 200px
+      .contacto
+        flex: 1
+        max-width: 200px
+      .ubicacion
+        flex: 1
+        max-width: 400px
+      .title
+        color: #c78d8a
+    .second-row
       text-align: center
-      flex: 1
-      .imagen-logo
-        width: 20%
 </style>

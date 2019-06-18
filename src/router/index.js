@@ -34,8 +34,10 @@ let router = new Router({
     },
     {
       path: '/pet-add',
+      name: 'petAdd',
       component: PetAdd,
-      hidden: true
+      hidden: true,
+      props: true
     },
     {
       path: '/adoption-management',

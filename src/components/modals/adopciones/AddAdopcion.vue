@@ -107,6 +107,7 @@ export default {
         })
       }else {
         this.accion === 'Adopcion' ? this.postAdopcion() : this.postAcogida()
+        this.$parent.close()
       }
     },
     postAdopcion() {
@@ -118,7 +119,6 @@ export default {
         adopcion: adopcion
       })
       .then(response => {
-        console.log(response)
         this.$toast.open({
           message: response.data,
           type: 'is-info',
@@ -138,7 +138,6 @@ export default {
         acogida: acogida
       })
       .then(response => {
-        console.log(response)
         this.$toast.open({
           message: response.data,
           type: 'is-info',

@@ -72,6 +72,10 @@ export default {
     user_edit: {
       type: Object,
       default: null
+    },
+    loged: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -105,7 +109,6 @@ export default {
   mounted() {
     console.log(this.user_edit)
     if(this.user_edit != null) {
-      this.getPreferenciasUsuario(this.user_edit.id_usuario)
       this.user.nombre = this.user_edit.nombre
       this.user.apellidos = this.user_edit.apellidos
       this.fecha = new Date(this.user_edit.fecha_nacimiento * 1000)
@@ -132,6 +135,7 @@ export default {
           this.user.fecha_nac = moment(this.fecha).unix()
           this.user.telefono = parseInt(this.user.telefono)
           this.user_edit != null ? this.updateUsuario() : this.postUsuario()
+          this.$emit('refresh-user-table')
           this.$parent.close()
           return
         }
@@ -141,14 +145,6 @@ export default {
           position: 'is-bottom'
         })
       });
-    },
-    getPreferenciasUsuario(id) {
-      axios.get(`http://localhost:3000/apaz/v1/getPreferenciasUsuario/${id}`)
-        .then(res => {
-          for (const caracteristica of res.data) {
-            this.asignarPreferencia(caracteristica.caracteristicas)
-          }
-        })
     },
     getProvincias(){
       axios.get('http://localhost:3000/apaz/v1/provincias')
@@ -184,6 +180,7 @@ export default {
           type: 'is-info',
           position: 'is-bottom'
         })
+        this.$emit('refresh-user-table')
       })
       .catch(function (error) {
         console.log(error);
@@ -194,11 +191,23 @@ export default {
         usuario: this.user
       })
       .then((response) => {
-        this.$toast.open({
-          message: response.data,
-          type: 'is-info',
-          position: 'is-bottom'
-        })
+        if(this.loged === true) {
+          this.$toast.open({
+            message: response.data,
+            type: 'is-info',
+            position: 'is-bottom'
+          })
+          localStorage.removeItem("logedUser");
+          setInterval(() => {
+            this.$router.go()
+          }, 3000)
+        } else {
+          this.$toast.open({
+            message: 'La información del usuario se ha editado con éxito',
+            type: 'is-info',
+            position: 'is-bottom'
+          })
+        }
       })
       .catch(function (error) {
         console.log(error);

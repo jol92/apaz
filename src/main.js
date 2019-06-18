@@ -104,6 +104,54 @@ Vue.use(VeeValidate, {
 Validator.localize('es', es)
 Vue.config.productionTip = false
 
+router.beforeEach(async function (to, from, next) {
+  let loggedUser = {}
+  JSON.parse(localStorage.getItem('logedUser')) != null ? loggedUser = JSON.parse(localStorage.getItem('logedUser')) : loggedUser = {id_tipo_usuario: 2}
+  if (
+    to.path !== '/home' &&
+    to.path !== '/pet-list' &&
+    to.path !== '/help' &&
+    to.path !== '/about-us' &&
+    to.path !== '/pet-profile/' + 75 &&
+    to.path !== '/pet-profile/' + 76 &&
+    to.path !== '/pet-profile/' + 77 &&
+    to.path !== '/pet-profile/' + 78 &&
+    to.path !== '/pet-profile/' + 79 &&
+    to.path !== '/pet-profile/' + 80 &&
+    to.path !== '/pet-profile/' + 81 &&
+    to.path !== '/pet-profile/' + 82 &&
+    to.path !== '/pet-profile/' + 83 &&
+    to.path !== '/pet-profile/' + 84 &&
+    to.path !== '/pet-profile/' + 85 &&
+    to.path !== '/pet-profile/' + 86 &&
+    to.path !== '/pet-profile/' + 87 &&
+    to.path !== '/pet-profile/' + 88 &&
+    to.path !== '/pet-profile/' + 89 &&
+    to.path !== '/pet-profile/' + 90 &&
+    to.path !== '/pet-profile/' + 91 &&
+    to.path !== '/pet-profile/' + 92 &&
+    to.path !== '/pet-profile/' + 93 &&
+    to.path !== '/pet-profile/' + 94 &&
+    to.path !== '/pet-profile/' + 95 &&
+    to.path !== '/pet-profile/' + 96 &&
+    to.path !== '/pet-profile/' + 97 &&
+    to.path !== '/pet-profile/' + 98 &&
+    to.path !== '/pet-profile/' + 99 &&
+    to.path !== '/pet-profile/' + 100 &&
+    to.path !== '/pet-profile/' + 101 &&
+    to.path !== '/pet-profile/' + 102 &&
+    to.path !== '/pet-profile/' + 103 &&
+    to.path !== '/pet-profile/' + 104 &&
+    to.path !== '/pet-profile/' + 105 &&
+
+    loggedUser.id_tipo_usuario !== 1
+  ) {
+    next({ path: 'home' })
+  } else {
+    next()
+  }
+})
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

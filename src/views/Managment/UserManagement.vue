@@ -3,7 +3,7 @@
     custom-title(title="Administrar Usuarios")
     b-table(empty striped narrowed hoverable mobile-cards :data='userList', :paginated='isPaginated', :per-page='perPage', :current-page.sync='currentPage', :pagination-simple='isPaginationSimple', :default-sort-direction='defaultSortDirection', default-sort="id", aria-next-label='Next page', aria-previous-label='Previous page', aria-page-label='Page', aria-current-label='Current page' style="width: 100%")
       template(slot-scope='props')
-        b-table-column(field='id', label='#', sortable)
+        b-table-column(field='id_usuario', label='#', sortable)
           | {{ props.row.id_usuario }}
         b-table-column(field='dni', label='Dni', sortable)
           | {{ props.row.dni }}
@@ -53,6 +53,7 @@ export default {
   },
   mounted() {
     this.fetchData()
+    this.$on('refresh-user-table', this.fetchData)
   },
   methods: {
     fetchData() {
@@ -99,7 +100,7 @@ export default {
 }
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass">
   .icons-box
     display: flex
     justify-content: space-around

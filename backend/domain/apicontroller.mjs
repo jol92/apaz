@@ -28,7 +28,16 @@ const apicontroller = app => {
       from: `${req.body.email}`,
       to: 'protectora.zeus@gmail.com', // mail receiver
       subject: `¡Un usuario se ha interesado por ${mascota.nombre}!`, // subject
-      html: `<p>El usuario <b>${usuario.nombre} ${usuario.apellidos}</b> se ha interesado en <b>${accion}</b> a <b>${mascota.nombre}</b></p><p><b> - Información del usuario - </b></p><p><b>Teléfono: </b>${usuario.telefono}</p><p><b>E-mail: </b>${usuario.email}</p>` // plain text body
+      html: `<p>El usuario <b>${usuario.nombre} ${usuario.apellidos}</b> se ha interesado en <b>${accion}</b> a <b>${mascota.nombre}</b></p>
+      <p><b> - Información del usuario - </b></p>
+      <p><b>Nombre: </b>${usuario.nombre} ${usuario.apellidos}</p>
+      <p><b>Dirección: </b>${usuario.direccion} ${usuario.direccion2}</p>
+      <p><b>Teléfono: </b>${usuario.telefono}</p>
+      <p><b>E-mail: </b>${usuario.email}</p>
+      <p><b> - Información de la mascota - </b></p>
+      <p><b>Id: </b>${mascota.id}</p>
+      <p><b>Nombre: </b>${mascota.nombre}</p>
+      <p><b>Raza: </b>${mascota.raza}</p>`
     }
     transporter.sendMail(mailOptions, function (err, res) {
       if (err) {
@@ -97,20 +106,22 @@ const apicontroller = app => {
           telefono: usuario.telefono,
           direccion: usuario.direccion1,
           fecha_nacimiento: usuario.fecha_nac,
-          id_tipo_usuario: 2,
+          id_tipo_usuario: usuario.id_tipo_usuario,
           id_provincia: usuario.provincia,
           direccion2: usuario.direccion2,
           id_tipo_vivienda: usuario.tipoVivienda
         }
       )
-        .where('id_usuario', usuario.id_usuario)
+        .where('usuarios.id_usuario', usuario.id_usuario)
         .then(function (response) {
-          const insertPreferencias = usuario.preferencias.map(preferencia => ({ id_usuario: response[0], id_caracteristica: preferencia }))
-          return knex('preferencias').insert(insertPreferencias)
+          knex('preferencias').where('preferencias.id_usuario', '=', usuario.id_usuario).del().then(response => {
+            const insertPreferencias = usuario.preferencias.map(preferencia => ({ id_usuario: usuario.id_usuario, id_caracteristica: preferencia }))
+            return knex('preferencias').insert(insertPreferencias)
+          })
         })
         .catch(err => { console.log(err) })
     })
-    res.send('La información ha sido actualizada')
+    res.send('La información ha sido actualizada por favor vuelve a logearte')
   })
 
   // Login Usuario
@@ -224,6 +235,7 @@ const apicontroller = app => {
     .select('mascotas.*', 'estados_mascota.nombre_estado', 'tipos_mascota.nombre')
     .where('mascotas.id_estado', '!=', 1)
     .where('mascotas.id_estado', '!=', 2)
+    .groupBy('mascotas.id')
     .options({nestTables: true})
     .then(data => res.send(data))
   )
@@ -236,6 +248,7 @@ const apicontroller = app => {
       .join('tipos_mascota', 'mascotas.id_tipo', '=', 'tipos_mascota.id')
       .join('caracteristicas_mascota', 'mascotas.id', '=', 'caracteristicas_mascota.id_mascota')
       .select('mascotas.*', 'estados_mascota.nombre_estado', 'tipos_mascota.nombre')
+      .groupBy('mascotas.id')
     if (filtrosMascota.buscador != null && filtrosMascota.buscador !== '' && filtrosMascota.buscador !== ' ') {
       query.where('mascotas.nombre', 'like', `%${filtrosMascota.buscador}%`).orWhere('mascotas.raza', 'like', `%${filtrosMascota.buscador}%`)
     }
@@ -259,7 +272,6 @@ const apicontroller = app => {
       }
     }
     query.where('mascotas.id_estado', '!=', 1)
-    query.groupBy('mascotas.id')
     query.options({nestTables: true})
     query.then(data => res.send(data))
   })
@@ -280,13 +292,32 @@ const apicontroller = app => {
       ...mascota,
       imagen
     }
-    console.log(mascotaFormateada)
     knex('mascotas').insert(mascotaFormateada)
       .then(res => {
         const insertarCaracteristicas = caracteristicas.map(caracteristica => ({ id_mascota: res[0], id_caracteristica: caracteristica }))
         return knex('caracteristicas_mascota').insert(insertarCaracteristicas)
       })
     res.send('¡La mascota ha sido registrada correctamente!')
+  })
+
+  // Update Mascota
+  app.post('/updateMascota', upload.single('file'), (req, res, _next) => {
+    const mascota = JSON.parse(req.body.mascota)
+    const imagen = req.file ? req.file.filename : 'No image'
+    const caracteristicas = mascota.caracteristicas
+    delete mascota.caracteristicas
+    const mascotaFormateada = {
+      ...mascota,
+      imagen
+    }
+    knex('mascotas').update(mascotaFormateada).where('mascotas.id', '=', mascotaFormateada.id)
+      .then(res => {
+        knex('caracteristicas_mascota').where('caracteristicas_mascota.id_mascota', '=', mascotaFormateada.id).del().then(response => {
+          const insertarCaracteristicas = caracteristicas.map(caracteristica => ({ id_mascota: mascotaFormateada.id, id_caracteristica: caracteristica }))
+          return knex('caracteristicas_mascota').insert(insertarCaracteristicas)
+        })
+      })
+    res.send('La información de la mascota se ha actualizado')
   })
 
   // Mostrar una mascota

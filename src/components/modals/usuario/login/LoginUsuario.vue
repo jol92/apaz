@@ -8,7 +8,7 @@
           b-field(label='E-mail', :type="{'is-danger': errors.has('email')}", :message="errors.first('email')")
             b-input(type='text', v-model='usuario.email', name='email', v-validate="'required|email'")
           b-field(label='Contraseña', :type="{'is-danger': errors.has('password')}", :message="errors.first('password')")
-            b-input(type='password', v-model='usuario.password', name='password', v-validate="'required'", data-vv-as="contraseña")
+            b-input(type='password', v-model='usuario.password', name='password', v-validate="'required'", data-vv-as="contraseña" password-reveal)
           .button-box
             button.button.is-primary(type='submit')  Entrar
 </template>

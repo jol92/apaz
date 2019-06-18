@@ -26,27 +26,28 @@
       b-button(type='is-primary' @click="getFilteredPets" icon-left="search" style="margin-top: 10px") Buscar
     .pet-list
       custom-title(title="Nuestras mascotas en adopción")
-      b-pagination(:total="pagination.total" :current.sync="pagination.current" :per-page="pagination.perPage" aria-next-label="Next page" aria-previous-label="Previous page" aria-page-label="Page" aria-current-label="Current page")
       .lista-animales
         .columns
-          .column(v-for="mascota in petList" :key="mascota.id")
-            .card(@click="mascotaClick(mascota.mascotas.id)")
-              .card-image
-                figure.image.is-4by3
-                  img(:src="ruta + mascota.mascotas.imagen")
-              .card-content
-                .media
-                  .media-content
-                    p.title.is-4 {{ mascota.mascotas.nombre }}
-                .content
-                  p(v-if="mascota.mascotas.fecha_nacimiento != null") Fecha de nacimiento: {{ moment.unix(mascota.mascotas.fecha_nacimiento).format('DD/MM/YYYY') }}
-                  p(v-else) Fecha de nacimiento: Desconocida
-                  p(v-if="mascota.mascotas.genero === 0") Macho 
-                    b-icon(pack='fas', :icon="mascota.mascotas.genero === 0 ? 'mars' : 'venus'")
-                  p(v-else) Hembra
-                    b-icon(pack='fas', :icon="mascota.mascotas.genero === 0 ? 'mars' : 'venus'")
-                  p(v-if="mascota.mascotas.id_estado === 3") En Adopción / Acogida
-                  p(v-else-if="mascota.mascotas.id_estado === 2") En adopción
+          //- .column(v-for="mascota in petList" :key="mascota.id")
+          b-table.column(empty striped narrowed hoverable mobile-cards :data='petList', :paginated='isPaginated', :per-page='perPage', :current-page.sync='currentPage', :pagination-simple='isPaginationSimple', :default-sort-direction='defaultSortDirection', default-sort='id' aria-next-label='Next page', aria-previous-label='Previous page', aria-page-label='Page', aria-current-label='Current page' style="width: 100%")
+            template(slot-scope='mascota')
+              .card(@click="mascotaClick(mascota.row.mascotas.id)")
+                .card-image
+                  figure.image.is-4by3
+                    img(:src="ruta + mascota.row.mascotas.imagen")
+                .card-content
+                  .media
+                    .media-content
+                      p.title.is-4 {{ mascota.row.mascotas.nombre }}
+                  .content
+                    p(v-if="mascota.row.mascotas.fecha_nacimiento != null") Fecha de nacimiento: {{ moment.unix(mascota.row.mascotas.fecha_nacimiento).format('DD/MM/YYYY') }}
+                    p(v-else) Fecha de nacimiento: Desconocida
+                    p(v-if="mascota.row.mascotas.genero === 0") Macho 
+                      b-icon(pack='fas', :icon="mascota.row.mascotas.genero === 0 ? 'mars' : 'venus'")
+                    p(v-else) Hembra
+                      b-icon(pack='fas', :icon="mascota.row.mascotas.genero === 0 ? 'mars' : 'venus'")
+                    p(v-if="mascota.row.mascotas.id_estado === 3") En Adopción / Acogida
+                    p(v-else-if="mascota.row.mascotas.id_estado === 2") En adopción
 </template>
 
 <script>
@@ -67,11 +68,11 @@ export default {
       caracteristicas: [],
       scrollPosition: null,
       tagtipe: 'is-primary',
-      pagination: {
-        total: 200,
-        current: 1,
-        perPage: 20,
-      },
+      isPaginated: true,
+      isPaginationSimple: true,
+      defaultSortDirection: 'asc',
+      currentPage: 1,
+      perPage: 10,
       filtros: {
         buscador: '',
         tipo: null,
@@ -88,10 +89,8 @@ export default {
     fetchData() {
       this.getFilteredPets()
       this.getCaracteristicas()
-      console.log(this.petList)
     },
     mascotaClick(id) {
-      console.log(id)
       this.$router.push({ path: `pet-profile/${id}`, params: {id: id }})
     },
     getFilteredPets() {
@@ -120,7 +119,7 @@ export default {
 }
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass">
   .content
     text-align: left !important
     .filter-box
@@ -132,18 +131,27 @@ export default {
         a
           color: white
     .pet-list
+      .table tbody
+        display: flex
+        flex-wrap: wrap
+        tr
+          margin: 10px
+          max-width: 350px
+          min-width: 350px
       .columns
         display: flex
         flex-wrap: wrap
         justify-content: center
-        .column
-          max-width: 320px
-          min-width: 320px
-          .card
-            cursor: pointer
-          .card:hover
-            -webkit-animation: shadow-drop-2-center 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both
-            animation: shadow-drop-2-center 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both
+        .card
+          cursor: pointer
+          .is-4
+            font-weight: bold
+            color: #ff3860
+          p
+            font-weight: 600
+        .card:hover
+          -webkit-animation: shadow-drop-2-center 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both
+          animation: shadow-drop-2-center 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both
       ul.pagination-list
         list-style-type: none
       .content

@@ -16,8 +16,8 @@
                   b ¡Ayúdanos económicamente haciendo un donativo o haciendo teaming con nosotros!
                   p Podrás ayudar a cientos de animales con sólo un poco de tiempo y dinero blablabla, así podrás lalala lo que sea ya tu sabes xd
               footer.card-footer
-                a.card-footer-item Donar
-                a.card-footer-item Teaming
+                a.card-footer-item(href="https://www.paypal.es" target="_blank") Donar
+                a.card-footer-item(href="https://www.teaming.net/apaz?lang=es_ES" target="_blank") Teaming
         .column
           section
             b-collapse.card(:open="false" aria-id='contentIdForA11y3')
@@ -31,44 +31,46 @@
                   b ¿Quieres adoptar a tu nuevo mejor amigo?
                   p Adoptando a uno de nuestros animales le estarás dando una segunda oportunidad a blablablalba
               footer.card-footer
-                a.card-footer-item Ver mascotas en adopción
+              router-link(tag="a" to="/pet-list").card-footer-item Ver mascotas en adopción
         .column
           section
             b-collapse.card(:open="false" aria-id='contentIdForA11y3')
               .card-header(slot='trigger', slot-scope='props', role='button', aria-controls='contentIdForA11y3')
                 p.card-header-title
-                  | Acoge
+                  | Hazte voluntario
                 a.card-header-icon
                   b-icon(:icon="props.open ? 'caret-down' : 'caret-up'")
               .card-content
                 .content
-                  b ¡Tenemos mascotas que necesitan una casa de acogida urgente, ayúdanos!
-                  p Siendo casa de acogida podrás ayudar a nuestros amigos mientras encuentran su hogar
+                  b ¡Ayúdanos a mantener APAZ operativo!
+                  p Siendo voluntario podrás ayudar a que la organización sea más efectiva.
+                  p Para ser voluntario contáctanos contándonos por qué quieres ser voluntario
               footer.card-footer
-                a.card-footer-item Ver mascotas en acogida
+                a.card-footer-item(href='mailto:protectora.zeus@gmail.com') Contáctanos
     .second-content
       custom-title(title="Nuestras mascotas en adopción")
-      b-pagination(:total="pagination.total" :current.sync="pagination.current" :per-page="pagination.perPage" aria-next-label="Next page" aria-previous-label="Previous page" aria-page-label="Page" aria-current-label="Current page")
       .lista-animales
         .columns
-          .column(v-for="mascota in petList" :key="mascota.id")
-            .card(@click="mascotaClick(mascota.mascotas.id)")
-              .card-image
-                figure.image.is-4by3
-                  img(:src="ruta + mascota.mascotas.imagen")
-              .card-content
-                .media
-                  .media-content
-                    p.title.is-4 {{ mascota.mascotas.nombre }}
-                .content
-                  p(v-if="mascota.mascotas.fecha_nacimiento != null") Fecha de nacimiento: {{ moment.unix(mascota.mascotas.fecha_nacimiento).format('DD/MM/YYYY') }}
-                  p(v-else) Fecha de nacimiento: Desconocida
-                  p(v-if="mascota.mascotas.genero === 0") Macho 
-                    b-icon(pack='fas', :icon="mascota.mascotas.genero === 0 ? 'mars' : 'venus'")
-                  p(v-else) Hembra
-                    b-icon(pack='fas', :icon="mascota.mascotas.genero === 0 ? 'mars' : 'venus'")
-                  p(v-if="mascota.mascotas.id_estado === 3") En Adopción / Acogida
-                  p(v-else-if="mascota.mascotas.id_estado === 2") En adopción
+          //- .column(v-for="mascota in petList" :key="mascota.id")
+          b-table.column(empty striped narrowed hoverable mobile-cards :data='petList', :paginated='isPaginated', :per-page='perPage', :current-page.sync='currentPage', :pagination-simple='isPaginationSimple', :default-sort-direction='defaultSortDirection', default-sort='id' aria-next-label='Next page', aria-previous-label='Previous page', aria-page-label='Page', aria-current-label='Current page' style="width: 100%")
+            template(slot-scope='mascota')
+              .card(@click="mascotaClick(mascota.row.mascotas.id)")
+                .card-image
+                  figure.image.is-4by3
+                    img(:src="ruta + mascota.row.mascotas.imagen")
+                .card-content
+                  .media
+                    .media-content
+                      p.title.is-4 {{ mascota.row.mascotas.nombre }}
+                  .content
+                    p(v-if="mascota.row.mascotas.fecha_nacimiento != null") Fecha de nacimiento: {{ moment.unix(mascota.row.mascotas.fecha_nacimiento).format('DD/MM/YYYY') }}
+                    p(v-else) Fecha de nacimiento: Desconocida
+                    p(v-if="mascota.row.mascotas.genero === 0") Macho 
+                      b-icon(pack='fas', :icon="mascota.row.mascotas.genero === 0 ? 'mars' : 'venus'")
+                    p(v-else) Hembra
+                      b-icon(pack='fas', :icon="mascota.row.mascotas.genero === 0 ? 'mars' : 'venus'")
+                    p(v-if="mascota.row.mascotas.id_estado === 3") En Adopción / Acogida
+                    p(v-else-if="mascota.row.mascotas.id_estado === 2") En adopción
 </template>
 
 <script>
@@ -88,30 +90,27 @@
         ruta: '../../static/img/',
         petList: [],
         scrollPosition: null,
-        pagination: {
-          total: 200,
-          current: 1,
-          perPage: 20,
-        }
+        isPaginated: true,
+        isPaginationSimple: true,
+        defaultSortDirection: 'asc',
+        currentPage: 1,
+        perPage: 10,
       };
     },
     mounted() {
       this.fetchData()
       window.addEventListener('scroll', this.updateScroll);
-      console.log(this.petList)
     },
     methods: {
       fetchData() {
         this.getAllPets()
       },
       mascotaClick(id) {
-        console.log(id)
         this.$router.push({ path: `pet-profile/${id}`, params: {id: id }})
       },
       getAllPets() {
         axios.get('http://localhost:3000/apaz/v1/mascotasNoAdoptadas').then(response =>{
           this.petList = response.data
-          console.log(this.petList)
         }).catch(error =>{
           console.log(error)
         })
@@ -127,24 +126,32 @@
   .content
     text-align: left !important
     .second-content
+      .table tbody
+        display: flex
+        flex-wrap: wrap
+        tr
+          margin: 10px
+          max-width: 350px
+          min-width: 350px
       .columns
         display: flex
         flex-wrap: wrap
         justify-content: center
-        .column
-          max-width: 320px
-          min-width: 320px
-          .card
-            cursor: pointer
-          .card:hover
-            -webkit-animation: shadow-drop-2-center 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both
-            animation: shadow-drop-2-center 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both
+        .card
+          cursor: pointer
+          .is-4
+            font-weight: bold
+            color: #ff3860
+          p
+            font-weight: 600
+        .card:hover
+          -webkit-animation: shadow-drop-2-center 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both
+          animation: shadow-drop-2-center 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both
       ul.pagination-list
         list-style-type: none
       .content
         p
           font-size: medium
-
     @-webkit-keyframes shadow-drop-2-center
       0%
         -webkit-transform: translateZ(0)
